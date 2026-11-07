@@ -1,0 +1,19 @@
+{
+  "name": "erglite",
+  "version": "1.0.0",
+  "description": "Structured indoor cycling for smart trainers, **without a subscription**. Build interval workouts by time and intensity (ERG mode) or ride a route you draw by distance and elevation (the trainer changes its resistance with the grade). Everything stays on your computer in a local SQLite database: no accounts, no cloud, no telemetry.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.65.0"
+  }
+}

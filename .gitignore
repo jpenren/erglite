@@ -8,3 +8,5 @@ app/src-tauri/gen
 *.db-shm
 .env
 .DS_Store
+test-results
+playwright-report
