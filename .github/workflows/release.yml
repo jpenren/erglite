@@ -90,32 +90,31 @@ jobs:
 
       - name: Extract binary for packaging
         if: runner.os == 'Linux' || runner.os == 'Windows'
-        working-directory: app/src-tauri
         run: |
           if [ -n "${{ matrix.target }}" ]; then
             TARGET="${{ matrix.target }}"
-            BINARY_PATH="target/${TARGET}/release/erglite-app"
+            BINARY_PATH="app/src-tauri/target/${TARGET}/release/erglite-app"
             if [ "${{ runner.os }}" = "Windows" ]; then
               BINARY_PATH="${BINARY_PATH}.exe"
             fi
           else
-            BINARY_PATH="target/release/erglite-app"
+            BINARY_PATH="app/src-tauri/target/release/erglite-app"
           fi
-          
+           
           echo "Binary path: ${BINARY_PATH}"
           ls -la "${BINARY_PATH}"
-          
-          mkdir -p ../release-pkg
+           
+          mkdir -p ${{ github.workspace }}/release-pkg
           if [ "${{ runner.os }}" = "Windows" ]; then
-            cp "${BINARY_PATH}" ../release-pkg/erglite-app.exe
+            cp "${BINARY_PATH}" ${{ github.workspace }}/release-pkg/erglite-app.exe
           else
-            cp "${BINARY_PATH}" ../release-pkg/erglite-app
+            cp "${BINARY_PATH}" ${{ github.workspace }}/release-pkg/erglite-app
           fi
 
       - name: Package Linux binary
         if: runner.os == 'Linux'
         run: |
-          cd /home/runner/work/erglite/erglite
+          cd ${{ github.workspace }}
           tar -czf erglite-app-linux.tar.gz -C release-pkg .
 
       - name: Package Windows binary
