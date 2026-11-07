@@ -5,6 +5,7 @@ time and intensity (ERG mode) or ride a route you draw by distance and elevation
 its resistance with the grade). Everything stays on your computer in a local SQLite database: no
 accounts, no cloud, no telemetry.
 
+> **Working name.** "ErgLite" is provisional. The code is organized so that renaming the project is cheap.
 > The first target device is the Zycle ZPro. Zycle and ZPro are trademarks of their owners; this project
 > is not affiliated with them.
 
@@ -125,11 +126,31 @@ No dev server needed—the frontend is embedded in the binary.
 
 ## Installation from releases
 
-Pre-built binaries are available on the [releases page](https://github.com/jpenren/erglite/releases).
+Pre-built installers and binaries are available on the [releases page](https://github.com/jpenren/erglite/releases).
 
 ### Linux
 
-Download the latest `.tar.gz`:
+**Option 1: Native packages (recommended)**
+
+```bash
+# Debian/Ubuntu
+wget https://github.com/jpenren/erglite/releases/latest/download/ErgLite_0.4.0_amd64.deb
+sudo apt install ./ErgLite_0.4.0_amd64.deb
+
+# Fedora/RHEL
+wget https://github.com/jpenren/erglite/releases/latest/download/ErgLite-0.4.0-1.x86_64.rpm
+sudo dnf install ./ErgLite-0.4.0-1.x86_64.rpm
+```
+
+**Option 2: AppImage (portable)**
+
+```bash
+wget https://github.com/jpenren/erglite/releases/latest/download/ErgLite_0.4.0_amd64.AppImage
+chmod +x ErgLite_0.4.0_amd64.AppImage
+./ErgLite_0.4.0_amd64.AppImage
+```
+
+**Option 3: Standalone binary (legacy)**
 
 ```bash
 wget https://github.com/jpenren/erglite/releases/latest/download/erglite-app-linux.tar.gz
@@ -137,7 +158,7 @@ tar -xzf erglite-app-linux.tar.gz
 ./erglite-app
 ```
 
-**Note:** Requires WebKitGTK dependencies:
+**Dependencies** (required for all options):
 
 ```bash
 # Ubuntu/Debian
@@ -149,7 +170,24 @@ sudo dnf install webkit2gtk4.1 gtk3 libayatana-appindicator-gtk3 librsvg2
 
 ### macOS
 
-Download the latest universal binary (works on both Intel and Apple Silicon):
+**Option 1: Universal DMG (recommended, works on Intel + Apple Silicon)**
+
+```bash
+wget https://github.com/jpenren/erglite/releases/latest/download/ErgLite_universal.dmg
+# Or open the .dmg and drag ErgLite to Applications
+```
+
+**Option 2: Architecture-specific DMG**
+
+```bash
+# Intel (x86_64)
+wget https://github.com/jpenren/erglite/releases/latest/download/ErgLite_0.4.0_x86_64.dmg
+
+# Apple Silicon (aarch64)
+wget https://github.com/jpenren/erglite/releases/latest/download/ErgLite_0.4.0_aarch64.dmg
+```
+
+**Option 3: Standalone binary (legacy)**
 
 ```bash
 wget https://github.com/jpenren/erglite/releases/latest/download/erglite-app-macos.tar.gz
@@ -166,7 +204,22 @@ xattr -d com.apple.quarantine /Applications/ErgLite.app
 
 ### Windows
 
-Download and extract the latest:
+**Option 1: MSI Installer (recommended, system-wide)**
+
+```powershell
+# PowerShell
+Invoke-WebRequest -Uri "https://github.com/jpenren/erglite/releases/latest/download/ErgLite_0.4.0_x64_en-US.msi" -OutFile "ErgLite.msi"
+msiexec /i ErgLite.msi
+```
+
+**Option 2: NSIS Installer (user-wide, no admin)**
+
+```powershell
+Invoke-WebRequest -Uri "https://github.com/jpenren/erglite/releases/latest/download/ErgLite_0.4.0_x64-setup.exe" -OutFile "ErgLite_setup.exe"
+.\ErgLite_setup.exe
+```
+
+**Option 3: Standalone binary (legacy)**
 
 ```powershell
 # PowerShell
