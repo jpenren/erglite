@@ -119,6 +119,10 @@ jobs:
           pattern: 'macOS*-installers'
           path: macos-artifacts
           merge-multiple: true
+      - name: Debug artifacts
+        run: |
+          ls -la macos-artifacts/ || true
+          find macos-artifacts -type f 2>/dev/null | head -20 || true
 
       - name: Create universal DMG
         run: |
