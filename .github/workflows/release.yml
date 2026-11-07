@@ -143,7 +143,6 @@ jobs:
   macos-universal:
     name: macOS Universal Binary
     needs: build
-    if: runner.os == 'macOS'
     runs-on: macos-latest
     defaults:
       run:
