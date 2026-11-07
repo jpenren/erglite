@@ -16,16 +16,20 @@ jobs:
         include:
           - name: Linux
             os: ubuntu-22.04
-            target: ""
+            targets: "x86_64-unknown-linux-gnu"
             asset_name: erglite-app-linux-${{ github.ref_name }}.tar.gz
           - name: Windows
             os: windows-latest
-            target: ""
+            targets: "x86_64-pc-windows-msvc"
             asset_name: erglite-app-windows-${{ github.ref_name }}.tar.gz
-          - name: macOS (Universal)
+          - name: macOS (x86_64)
             os: macos-latest
-            target: "--target universal-apple-darwin"
-            asset_name: erglite-app-macos-${{ github.ref_name }}.tar.gz
+            targets: "x86_64-apple-darwin"
+            asset_name: erglite-app-macos-x86_64-${{ github.ref_name }}.tar.gz
+          - name: macOS (aarch64)
+            os: macos-latest
+            targets: "aarch64-apple-darwin"
+            asset_name: erglite-app-macos-aarch64-${{ github.ref_name }}.tar.gz
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -34,7 +38,7 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.os == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+          targets: ${{ matrix.targets }}
 
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
@@ -69,25 +73,24 @@ jobs:
 
       - name: Build Tauri app (release binary)
         working-directory: app/src-tauri
-        run: cargo build --release ${{ matrix.target }}
+        run: cargo build --release --target ${{ matrix.targets }}
 
       - name: Package binary with README
         run: |
-          BINARY_NAME="erglite-app${{ runner.os == 'Windows' && '.exe' || '' }}"
-          BINARY_PATH="app/src-tauri/target/${{ matrix.target != '' && 'universal-apple-darwin' || 'x86_64-unknown-linux-gnu' }}/release/${BINARY_NAME}"
-          # On macOS universal, the binary is at a different path
-          if [ "${{ matrix.os }}" = "macos-latest" ]; then
-            BINARY_PATH="app/src-tauri/target/universal-apple-darwin/release/${BINARY_NAME}"
-          elif [ "${{ runner.os }}" = "Windows" ]; then
-            BINARY_PATH="app/src-tauri/target/x86_64-pc-windows-msvc/release/${BINARY_NAME}"
+          TARGET="${{ matrix.targets }}"
+          BINARY_NAME="erglite-app"
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            BINARY_NAME="erglite-app.exe"
           fi
+          
+          BINARY_PATH="app/src-tauri/target/${TARGET}/release/${BINARY_NAME}"
           
           echo "Binary path: ${BINARY_PATH}"
           ls -la "${BINARY_PATH}"
           
           # Create package directory
           mkdir -p release-pkg
-          cp "${BINARY_PATH}" release-pkg/erglite-app${{ runner.os == 'Windows' && '.exe' || '' }}
+          cp "${BINARY_PATH}" release-pkg/${BINARY_NAME}
           cp README.md release-pkg/
           
           # Create tar.gz
@@ -100,9 +103,51 @@ jobs:
           path: ${{ matrix.asset_name }}
           retention-days: 1
 
+  macos-universal:
+    name: macOS Universal Binary
+    needs: build
+    if: runner.os == 'macOS'
+    runs-on: macos-latest
+    steps:
+      - name: Download macOS artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: erglite-app-macos-*
+          path: macos-artifacts
+          merge-multiple: true
+
+      - name: Create universal binary
+        run: |
+          x86_64_BIN="macos-artifacts/erglite-app-macos-x86_64-${{ github.ref_name }}.tar.gz"
+          aarch64_BIN="macos-artifacts/erglite-app-macos-aarch64-${{ github.ref_name }}.tar.gz"
+          
+          # Extract both
+          mkdir -p x86_64 aarch64 universal
+          tar -xzf "${x86_64_BIN}" -C x86_64
+          tar -xzf "${aarch64_BIN}" -C aarch64
+          
+          # Create universal binary with lipo
+          lipo -create -output universal/erglite-app x86_64/erglite-app aarch64/erglite-app
+          
+          # Verify
+          file universal/erglite-app
+          
+          # Copy README
+          cp x86_64/README.md universal/
+          
+          # Create universal tar.gz
+          tar -czf erglite-app-macos-${{ github.ref_name }}.tar.gz -C universal .
+
+      - name: Upload universal artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: erglite-app-macos-${{ github.ref_name }}.tar.gz
+          path: erglite-app-macos-${{ github.ref_name }}.tar.gz
+          retention-days: 1
+
   release:
     name: Create Release
-    needs: build
+    needs: [build, macos-universal]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -128,5 +173,5 @@ jobs:
           files: |
             artifacts/erglite-app-linux-*.tar.gz
             artifacts/erglite-app-windows-*.tar.gz
-            artifacts/erglite-app-macos-*.tar.gz
+            artifacts/erglite-app-macos-${{ github.ref_name }}.tar.gz
           generate_release_notes: false
