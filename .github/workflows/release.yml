@@ -16,19 +16,19 @@ jobs:
         include:
           - name: Linux
             os: ubuntu-22.04
-            targets: "x86_64-unknown-linux-gnu"
+            target: ""
             asset_name: erglite-app-linux-${{ github.ref_name }}.tar.gz
           - name: Windows
             os: windows-latest
-            targets: "x86_64-pc-windows-msvc"
+            target: "x86_64-pc-windows-msvc"
             asset_name: erglite-app-windows-${{ github.ref_name }}.tar.gz
           - name: macOS (x86_64)
             os: macos-latest
-            targets: "x86_64-apple-darwin"
+            target: "x86_64-apple-darwin"
             asset_name: erglite-app-macos-x86_64-${{ github.ref_name }}.tar.gz
           - name: macOS (aarch64)
             os: macos-latest
-            targets: "aarch64-apple-darwin"
+            target: "aarch64-apple-darwin"
             asset_name: erglite-app-macos-aarch64-${{ github.ref_name }}.tar.gz
     runs-on: ${{ matrix.os }}
     steps:
@@ -38,7 +38,7 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.targets }}
+          targets: ${{ matrix.target }}
 
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
@@ -73,24 +73,36 @@ jobs:
 
       - name: Build Tauri app (release binary)
         working-directory: app/src-tauri
-        run: cargo build --release --target ${{ matrix.targets }}
+        run: |
+          if [ -n "${{ matrix.target }}" ]; then
+            cargo build --release --target ${{ matrix.target }}
+          else
+            cargo build --release
+          fi
 
       - name: Package binary with README
         run: |
-          TARGET="${{ matrix.targets }}"
-          BINARY_NAME="erglite-app"
-          if [ "${{ runner.os }}" = "Windows" ]; then
-            BINARY_NAME="erglite-app.exe"
+          if [ -n "${{ matrix.target }}" ]; then
+            TARGET="${{ matrix.target }}"
+            BINARY_PATH="app/src-tauri/target/${TARGET}/release/erglite-app"
+            if [ "${{ runner.os }}" = "Windows" ]; then
+              BINARY_PATH="${BINARY_PATH}.exe"
+            fi
+          else
+            # Native build (Linux)
+            BINARY_PATH="app/src-tauri/target/release/erglite-app"
           fi
-          
-          BINARY_PATH="app/src-tauri/target/${TARGET}/release/${BINARY_NAME}"
           
           echo "Binary path: ${BINARY_PATH}"
           ls -la "${BINARY_PATH}"
           
           # Create package directory
           mkdir -p release-pkg
-          cp "${BINARY_PATH}" release-pkg/${BINARY_NAME}
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            cp "${BINARY_PATH}" release-pkg/erglite-app.exe
+          else
+            cp "${BINARY_PATH}" release-pkg/erglite-app
+          fi
           cp README.md release-pkg/
           
           # Create tar.gz
