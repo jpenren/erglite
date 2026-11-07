@@ -130,26 +130,15 @@ Pre-built binaries are available on the [releases page](https://github.com/jpenr
 
 ### Linux
 
-Download the `.tar.gz` for your architecture:
+Download the `.tar.gz`:
 
 ```bash
-# x86_64
 wget https://github.com/jpenren/erglite/releases/download/v0.1.0/erglite-app-linux-v0.1.0.tar.gz
 tar -xzf erglite-app-linux-v0.1.0.tar.gz
 ./erglite-app
 ```
 
-Or install the system package:
-
-```bash
-# Debian/Ubuntu
-sudo apt install ./ErgLite_0.1.0_amd64.deb
-
-# Fedora/RHEL
-sudo dnf install ./ErgLite-0.1.0-1.x86_64.rpm
-```
-
-**Note:** On Linux you may need to install WebKitGTK dependencies:
+**Note:** Requires WebKitGTK dependencies:
 
 ```bash
 # Ubuntu/Debian
@@ -169,8 +158,6 @@ tar -xzf erglite-app-macos-v0.1.0.tar.gz
 ./erglite-app
 ```
 
-Or open the `.dmg` and drag ErgLite to Applications.
-
 **Note:** On first run, macOS Gatekeeper may block the app. Allow it in:
 
 ```bash
@@ -188,8 +175,6 @@ Invoke-WebRequest -Uri "https://github.com/jpenren/erglite/releases/download/v0.
 tar -xzf erglite-app-windows-v0.1.0.tar.gz
 .\erglite-app.exe
 ```
-
-Or run the `.msi` installer for a system-wide install.
 
 **Note:** Requires [WebView2 Runtime](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) (pre-installed on Windows 11).
 
