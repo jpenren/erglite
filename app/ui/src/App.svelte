@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import SideNav from './lib/components/SideNav.svelte';
-  import { answer, app, dialog, init, router } from './lib/state.svelte';
+  import { answer, answerGpx, app, dialog, gpxDialog, init, router } from './lib/state.svelte';
   import { t } from './lib/i18n.svelte';
   import Home from './screens/Home.svelte';
   import Devices from './screens/Devices.svelte';
@@ -45,6 +45,8 @@
     </div>
   {/if}
   {#if app.toast}<div class="toast" role="status">{app.toast}</div>{/if}
+  {#if gpxDialog.open}
+    <div class="backdrop" role="presentation" onclick={() => answerGpx('cancel')}>      <div class="modal card modal-wide" role="alertdialog" aria-modal="true" aria-label={gpxDialog.message} tabindex="-1" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.key === 'Escape' && answerGpx('cancel')}>        <p>{gpxDialog.message}</p>        <div class="acts">          <button class="btn" onclick={() => answerGpx('cancel')}>{t('common.cancel')}</button>          <button class="btn" onclick={() => answerGpx('original')}>{t('lib.gpxImportOriginal')}</button>          <button class="btn btn-primary" onclick={() => answerGpx('simplify')}>{t('lib.gpxSimplify')}</button>        </div>      </div>    </div>  {/if}
 {/if}
 
 <style>
@@ -54,6 +56,7 @@
   @keyframes enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   .backdrop { position: fixed; inset: 0; background: color-mix(in srgb, var(--bg) 70%, transparent); backdrop-filter: blur(6px); display: grid; place-items: center; z-index: 60; }
   .modal { padding: 26px 30px; display: flex; flex-direction: column; gap: 22px; max-width: 420px; font-size: 18px; }
+  .modal-wide { max-width: 560px; }
   .acts { display: flex; justify-content: flex-end; gap: 10px; }
   .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 12px 22px; border-radius: 999px; font-weight: 600; box-shadow: var(--shadow); z-index: 50; }
 </style>

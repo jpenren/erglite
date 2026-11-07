@@ -170,12 +170,36 @@ export class MockBackend implements Backend {
   async listWorkouts() { return [...this.workouts.values()].map((r) => structuredClone(r)); }
   async saveWorkout(id: string | null, w: Workout, source = 'user') { return this.put(id, w, source); }
   async deleteWorkout(id: string) { this.workouts.delete(id); }
-  async importWorkout(fileName: string, text: string): Promise<WorkoutRecord> {
+  async importWorkout(fileName: string, text: string, simplifyEveryM?: number): Promise<WorkoutRecord> {
     const doc = new DOMParser().parseFromString(text, 'application/xml');
     if (doc.querySelector('parsererror')) throw new Error('Invalid XML');
     let w: Workout;
     if (fileName.toLowerCase().endsWith('.gpx')) {
-      const pts = [...doc.querySelectorAll('trkpt')].map((p) => ({ lat: +(p.getAttribute('lat') ?? 0), lon: +(p.getAttribute('lon') ?? 0), ele: +(p.querySelector('ele')?.textContent ?? 0) }));
+      const trkpts = doc.evaluate('//*[local-name()="trkpt"]', doc, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+      let pts: Array<{ lat: number; lon: number; ele: number }> = [];
+      for (let i = 0; i < trkpts.snapshotLength; i++) {
+        const p = trkpts.snapshotItem(i);
+        pts.push({ lat: +(p.getAttribute('lat') ?? 0), lon: +(p.getAttribute('lon') ?? 0), ele: +(p.querySelector('ele')?.textContent ?? 0) });
+      }
+      // Simplify points if requested
+      if (simplifyEveryM && pts.length > 2) {
+        const hav = (a: typeof pts[0], b: typeof pts[0]) => { const r = 6371000, f = Math.PI / 180, s = Math.sin(((b.lat - a.lat) * f) / 2) ** 2 + Math.cos(a.lat * f) * Math.cos(b.lat * f) * Math.sin(((b.lon - a.lon) * f) / 2) ** 2; return 2 * r * Math.asin(Math.sqrt(s)); };
+        const dist = [0]; for (let i = 1; i < pts.length; i++) dist.push(dist[i - 1] + hav(pts[i - 1], pts[i]));
+        const simplified: typeof pts = [pts[0]];
+        const simplifiedDist = [0];
+        let nextTarget = simplifyEveryM;
+        for (let i = 1; i < pts.length - 1; i++) {
+          if (dist[i] >= nextTarget) {
+            simplified.push(pts[i]);
+            simplifiedDist.push(dist[i]);
+            nextTarget += simplifyEveryM;
+          }
+        }
+        simplified.push(pts[pts.length - 1]);
+        simplifiedDist.push(dist[dist.length - 1]);
+        pts = simplified;
+      }
+      if (pts.length < 2) throw new Error('GPX needs at least two track points');
       if (pts.length < 2) throw new Error('GPX needs at least two track points');
       const hav = (a: typeof pts[0], b: typeof pts[0]) => { const r = 6371000, f = Math.PI / 180, s = Math.sin(((b.lat - a.lat) * f) / 2) ** 2 + Math.cos(a.lat * f) * Math.cos(b.lat * f) * Math.sin(((b.lon - a.lon) * f) / 2) ** 2; return 2 * r * Math.asin(Math.sqrt(s)); };
       const dist = [0]; for (let i = 1; i < pts.length; i++) dist.push(dist[i - 1] + hav(pts[i - 1], pts[i]));
@@ -202,14 +226,14 @@ export class MockBackend implements Backend {
   async scanDevices(): Promise<Device[]> {
     await wait(900);
     return [
-      { id: 'sim-trainer', name: 'ZPro (simulated)', role: 'trainer', rssi: -52 },
+      { id: 'sim-trainer', name: 'Virtual Trainer', role: 'trainer', rssi: -52 },
       { id: 'sim-hr', name: 'Heart rate strap', role: 'heart_rate', rssi: -61 },
       { id: 'sim-pm', name: 'Power meter pedals', role: 'power', rssi: -78 },
     ];
   }
   async connectTrainer(): Promise<Capabilities> {
     await wait(700); this.connected = true;
-    return { name: 'ZPro (simulated)', supports_erg: true, supports_simulation: true, supports_resistance: false, min_power_w: 0, max_power_w: 2000, reports_cadence: true, reports_power: true, reports_heart_rate: true };
+    return { name: 'Virtual Trainer', supports_erg: true, supports_simulation: true, supports_resistance: false, min_power_w: 0, max_power_w: 2000, reports_cadence: true, reports_power: true, reports_heart_rate: true };
   }
   async disconnectTrainer() { this.connected = false; }
   setDemoSpeed(f: number) { this.speedFactor = f; if (this.timer) this.schedule(); }

@@ -21,8 +21,8 @@ pub struct ImportReport {
 fn attr(e: &BytesStart<'_>, name: &str) -> Option<String> {
     e.attributes()
         .flatten()
-        .find(|a| a.key.as_ref() == name.as_bytes())
-        .and_then(|a| a.unescape_value().ok().map(|v| v.into_owned()))
+        .find(|a| a.key.as_ref() == name)
+        .and_then(|a| a.normalized_value(quick_xml::XmlVersion::Implicit1_0).ok().map(|v| v.into_owned()))
 }
 
 fn num(e: &BytesStart<'_>, name: &str) -> Option<f32> {
@@ -54,7 +54,7 @@ pub fn import_zwo(xml: &str) -> Result<ImportReport, FormatError> {
     loop {
         match reader.read_event()? {
             Event::Start(e) | Event::Empty(e) => {
-                let tag = String::from_utf8_lossy(e.name().as_ref()).into_owned();
+                let tag = e.name().as_ref().to_owned();
                 let dur = num(&e, "Duration").unwrap_or(0.0);
                 match tag.as_str() {
                     "name" | "description" => current_text = Some(tag),
@@ -118,10 +118,7 @@ pub fn import_zwo(xml: &str) -> Result<ImportReport, FormatError> {
             }
             Event::Text(t) => {
                 if let Some(which) = current_text.take() {
-                    let text = t
-                        .decode()
-                        .map_err(|e| FormatError::Xml(e.to_string()))?
-                        .into_owned();
+                    let text = t.as_ref().to_owned();
                     if which == "name" {
                         name = text;
                     } else {

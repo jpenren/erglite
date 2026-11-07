@@ -128,3 +128,10 @@ export function ask(message: string): Promise<boolean> {
   return new Promise((resolve) => { dialog.message = message; dialog.open = true; dialog.resolve = resolve; });
 }
 export function answer(v: boolean) { dialog.open = false; dialog.resolve?.(v); dialog.resolve = null; }
+
+/** Three-option dialog for GPX import: 'cancel' | 'original' | 'simplify' */
+export const gpxDialog = $state({ open: false, message: '', resolve: null as null | ((v: 'cancel' | 'original' | 'simplify') => void) });
+export function askGpx(message: string): Promise<'cancel' | 'original' | 'simplify'> {
+  return new Promise((resolve) => { gpxDialog.message = message; gpxDialog.open = true; gpxDialog.resolve = resolve; });
+}
+export function answerGpx(v: 'cancel' | 'original' | 'simplify') { gpxDialog.open = false; gpxDialog.resolve?.(v); gpxDialog.resolve = null; }

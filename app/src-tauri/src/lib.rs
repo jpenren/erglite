@@ -180,10 +180,10 @@ fn delete_workout(state: State<'_, AppState>, id: String) -> Result<(), String> 
 }
 
 #[tauri::command]
-fn import_workout(state: State<'_, AppState>, file_name: String, text: String) -> Result<WorkoutRecord, String> {
+fn import_workout(state: State<'_, AppState>, file_name: String, text: String, simplify_every_m: Option<f64>) -> Result<WorkoutRecord, String> {
     let lower = file_name.to_lowercase();
     let (workout, source) = if lower.ends_with(".gpx") {
-        let route = erglite_formats::import_gpx_route(&text, 100.0, 9).map_err(err)?;
+        let route = erglite_formats::import_gpx_route(&text, 100.0, 9, simplify_every_m).map_err(err)?;
         let name = file_name.trim_end_matches(".gpx").trim_end_matches(".GPX");
         (Workout::from_route(name, route), "gpx")
     } else {
@@ -196,7 +196,7 @@ fn import_workout(state: State<'_, AppState>, file_name: String, text: String) -
 
 #[tauri::command]
 async fn scan_devices(state: State<'_, AppState>) -> Result<Vec<DeviceInfo>, String> {
-    let mut out = vec![DeviceInfo { id: SIM_TRAINER_ID.into(), name: "ZPro (simulated)".into(), role: "trainer".into(), rssi: None }];
+    let mut out = vec![DeviceInfo { id: SIM_TRAINER_ID.into(), name: "Virtual Trainer".into(), role: "trainer".into(), rssi: None }];
     #[cfg(feature = "ble")]
     if let Ok(found) = erglite_transport::ble::scan(Duration::from_secs(6)).await {
         let mut map = lock(&state.ble)?;

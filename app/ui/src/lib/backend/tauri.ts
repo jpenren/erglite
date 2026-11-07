@@ -14,7 +14,7 @@ export function createTauriBackend(): Backend {
     listWorkouts: () => call('list_workouts'),
     saveWorkout: (id, workout, source = 'user') => call('save_workout', { id, workout, source }),
     deleteWorkout: (id) => call('delete_workout', { id }),
-    importWorkout: (fileName, text) => call('import_workout', { fileName, text }),
+    importWorkout: (fileName, text, simplifyEveryM?: number) => call('import_workout', { fileName, text, simplify_every_m: simplifyEveryM }),
     scanDevices: () => call('scan_devices'),
     connectTrainer: (id) => call('connect_trainer', { id }),
     disconnectTrainer: () => call('disconnect_trainer'),

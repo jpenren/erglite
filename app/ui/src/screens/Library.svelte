@@ -1,7 +1,7 @@
 <script lang="ts">
   import Icon from '../lib/components/Icon.svelte';
   import WorkoutCard from '../lib/components/WorkoutCard.svelte';
-  import { app, ask, go, refresh, startRide, toast } from '../lib/state.svelte';
+  import { app, ask, askGpx, go, refresh, startRide, toast } from '../lib/state.svelte';
   import { backend } from '../lib/backend';
   import { t } from '../lib/i18n.svelte';
   let { kind }: { kind: 'time' | 'route' } = $props();
@@ -10,7 +10,26 @@
   async function importFile(e: Event) {
     const f = (e.currentTarget as HTMLInputElement).files?.[0];
     if (!f) return;
-    try { const rec = await backend.importWorkout(f.name, await f.text()); await refresh(); toast(`${rec.workout.name} ✓`); } catch (err) { toast(String(err)); }
+    const text = await f.text();
+    try {
+      let simplifyEveryM: number | undefined;
+      if (f.name.toLowerCase().endsWith('.gpx')) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, 'application/xml');
+        // Handle GPX namespace
+        const trkpts = doc.evaluate('//*[local-name()="trkpt"]', doc, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+        const pts = trkpts.snapshotLength;
+        if (pts > 500) {
+          const choice = await askGpx(`${t('lib.gpxManyPoints').replace('{pts}', String(pts))}\n${t('lib.gpxSimplifyPrompt')}`);
+          if (choice === 'simplify') simplifyEveryM = 500;
+          // 'original' means simplifyEveryM stays undefined
+          if (choice === 'cancel') return;
+        }
+      }
+      const rec = await backend.importWorkout(f.name, text, simplifyEveryM);
+      await refresh();
+      toast(`${rec.workout.name} ✓`);
+    } catch (err) { toast(String(err)); }
     (e.currentTarget as HTMLInputElement).value = '';
   }
   async function duplicate(id: string) { const r = app.workouts.find((x) => x.id === id); if (r) { await backend.saveWorkout(null, { ...r.workout, name: `${r.workout.name} (copy)` }); await refresh(); } }

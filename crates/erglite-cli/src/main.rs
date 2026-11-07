@@ -31,6 +31,9 @@ enum Cmd {
         /// Power the simulated rider produces on routes.
         #[arg(long, default_value_t = 200.0)]
         rider_power: f64,
+        /// Simplify GPX to one point every N meters (e.g., 500).
+        #[arg(long)]
+        simplify: Option<f64>,
     },
     /// Estimate the time of a route at a constant power.
     Estimate {
@@ -39,6 +42,9 @@ enum Cmd {
         /// Power in watts.
         #[arg(long, default_value_t = 200.0)]
         power: f64,
+        /// Simplify GPX to one point every N meters (e.g., 500).
+        #[arg(long)]
+        simplify: Option<f64>,
     },
     /// Scan for Bluetooth fitness devices (requires the `ble` feature).
     Scan {
@@ -48,7 +54,7 @@ enum Cmd {
     },
 }
 
-fn load(path: &str) -> Result<Workout, String> {
+fn load(path: &str, simplify: Option<f64>) -> Result<Workout, String> {
     let text = std::fs::read_to_string(path).map_err(|e| format!("{path}: {e}"))?;
     match Path::new(path)
         .extension()
@@ -60,7 +66,7 @@ fn load(path: &str) -> Result<Workout, String> {
             .map_err(|e| e.to_string()),
         "gpx" => {
             let route =
-                erglite_formats::import_gpx_route(&text, 100.0, 9).map_err(|e| e.to_string())?;
+                erglite_formats::import_gpx_route(&text, 100.0, 9, simplify).map_err(|e| e.to_string())?;
             let length = route.total_distance_m();
             Ok(Workout {
                 schema_version: 1,
@@ -89,8 +95,8 @@ fn mmss(s: f64) -> String {
     format!("{}:{:02}", (s / 60.0) as u32, (s % 60.0) as u32)
 }
 
-async fn simulate(file: &str, ftp: u16, rider_power: f64) -> Result<(), String> {
-    let workout = load(file)?;
+async fn simulate(file: &str, ftp: u16, rider_power: f64, simplify: Option<f64>) -> Result<(), String> {
+    let workout = load(file, simplify)?;
     let profile = Profile {
         ftp_w: ftp,
         ..Profile::default()
@@ -145,8 +151,8 @@ async fn simulate(file: &str, ftp: u16, rider_power: f64) -> Result<(), String> 
     Ok(())
 }
 
-fn estimate(file: &str, power: f64) -> Result<(), String> {
-    let workout = load(file)?;
+fn estimate(file: &str, power: f64, simplify: Option<f64>) -> Result<(), String> {
+    let workout = load(file, simplify)?;
     let route = workout.route.ok_or("the file has no route")?;
     let e = estimate_route(&route, power, &Profile::default().rider_params());
     let (up, down) = route.grade_extremes();
@@ -194,8 +200,9 @@ async fn main() {
             file,
             ftp,
             rider_power,
-        } => simulate(&file, ftp, rider_power).await,
-        Cmd::Estimate { file, power } => estimate(&file, power),
+            simplify,
+        } => simulate(&file, ftp, rider_power, simplify).await,
+        Cmd::Estimate { file, power, simplify } => estimate(&file, power, simplify),
         Cmd::Scan { seconds } => scan(seconds).await,
     };
     if let Err(e) = result {

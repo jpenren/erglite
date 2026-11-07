@@ -60,7 +60,7 @@ export interface Backend {
   listWorkouts(): Promise<WorkoutRecord[]>;
   saveWorkout(id: string | null, w: Workout, source?: string): Promise<string>;
   deleteWorkout(id: string): Promise<void>;
-  importWorkout(fileName: string, text: string): Promise<WorkoutRecord>;
+  importWorkout(fileName: string, text: string, simplifyEveryM?: number): Promise<WorkoutRecord>;
   scanDevices(): Promise<Device[]>;
   connectTrainer(id: string): Promise<Capabilities>;
   disconnectTrainer(): Promise<void>;
