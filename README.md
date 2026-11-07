@@ -5,7 +5,6 @@ time and intensity (ERG mode) or ride a route you draw by distance and elevation
 its resistance with the grade). Everything stays on your computer in a local SQLite database: no
 accounts, no cloud, no telemetry.
 
-> **Working name.** "ErgLite" is provisional. The code is organized so that renaming the project is cheap.
 > The first target device is the Zycle ZPro. Zycle and ZPro are trademarks of their owners; this project
 > is not affiliated with them.
 
