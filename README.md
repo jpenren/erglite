@@ -78,6 +78,52 @@ npm run build:demo        # one self-contained HTML file in app/ui/dist
 cd app/src-tauri && cargo install tauri-cli --version "^2" --locked && cargo tauri dev
 ```
 
+## Building the desktop app (erglite-app)
+
+The Tauri shell lives in `app/src-tauri/` and is a standalone Cargo workspace.
+
+### Prerequisites
+
+- Rust stable (≥1.85)
+- Node.js 22+
+- Linux: `libdbus-1-dev`, `pkg-config`, `libwebkit2gtk-4.1-dev`, `libayatana-appindicator3-dev`, `librsvg2-dev`
+- macOS: Xcode command line tools
+- Windows: Visual Studio Build Tools + WebView2
+
+### Development (hot reload)
+
+```bash
+cd app/src-tauri
+cargo install tauri-cli --version "^2" --locked
+cargo tauri dev
+```
+
+This starts the Vite dev server and the Tauri app with hot reload for both frontend and Rust code.
+
+### Production build
+
+```bash
+cd app/src-tauri
+cargo tauri build
+```
+
+This produces:
+- Binary: `target/release/erglite-app` (self-contained, embeds the UI)
+- Installers in `target/release/bundle/`:
+  - Linux: `.deb`, `.rpm`, `.AppImage`
+  - macOS: `.dmg`, `.app`
+  - Windows: `.msi`, `.exe`
+
+### Run the standalone binary
+
+After `cargo tauri build` or `cargo build --release`:
+
+```bash
+./app/src-tauri/target/release/erglite-app
+```
+
+No dev server needed—the frontend is embedded in the binary.
+
 ## Repository layout
 
 ```
