@@ -86,7 +86,7 @@ jobs:
             See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details.
           releaseDraft: true
           prerelease: false
-          args: --target ${{ matrix.target }} --features ble
+          args: ${{ matrix.target != '' && format('--target {0} --features ble', matrix.target) || '--features ble' }}
 
       - name: Extract binary for packaging
         if: runner.os == 'Linux' || runner.os == 'Windows'
