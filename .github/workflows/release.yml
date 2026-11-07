@@ -78,15 +78,6 @@ jobs:
           cache: npm
           cache-dependency-path: app/ui/package-lock.json
 
-      - name: Set version from tag
-        run: |
-          TAG_VERSION=${GITHUB_REF_NAME#v}
-          echo "Setting version to $TAG_VERSION"
-          # Use perl for cross-platform in-place editing (works on both Linux and macOS)
-          perl -pi -e "s/version = \"0\.1\.0\"/version = \"$TAG_VERSION\"/g" Cargo.toml
-          perl -pi -e "s/version = \"0\.1\.0\"/version = \"$TAG_VERSION\"/g" app/src-tauri/Cargo.toml
-          perl -pi -e "s/\"version\": \"0\.1\.0\"/\"version\": \"$TAG_VERSION\"/g" app/src-tauri/tauri.conf.json
-
       - name: Install UI dependencies and build
         working-directory: app/ui
         run: |

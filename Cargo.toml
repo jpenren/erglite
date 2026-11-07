@@ -13,7 +13,7 @@ members = [
 exclude = ["app/src-tauri"]
 
 [workspace.package]
-version = "0.1.0"
+version = "0.4.0"
 edition = "2024"
 rust-version = "1.85"
 license = "MIT OR Apache-2.0"
@@ -47,3 +47,14 @@ expect_used = "warn"
 lto = "thin"
 codegen-units = 1
 strip = true
+
+[package.metadata.release]
+# cargo-release configuration
+tag-prefix = "v"
+tag-message = "Release {{version}}"
+commit-message = "chore: release {{version}}"
+branch = "main"
+sign-tag = true
+sign-commit = true
+changelog = "CHANGELOG.md"
+push-remote = "origin"
