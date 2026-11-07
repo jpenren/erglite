@@ -108,7 +108,6 @@ jobs:
   macos-universal:
     name: macOS Universal Installers
     needs: build
-    if: runner.os == 'macOS'
     runs-on: macos-latest
     defaults:
       run:
