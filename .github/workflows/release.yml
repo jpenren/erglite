@@ -17,19 +17,28 @@ jobs:
           - name: Linux
             os: ubuntu-22.04
             target: ""
-            asset_name: erglite-app-linux.tar.gz
+            artifacts: |
+              target/release/bundle/deb/*.deb
+              target/release/bundle/rpm/*.rpm
+              target/release/bundle/appimage/*.AppImage
           - name: Windows
             os: windows-latest
             target: "x86_64-pc-windows-msvc"
-            asset_name: erglite-app-windows.tar.gz
+            artifacts: |
+              target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
+              target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
           - name: macOS (x86_64)
             os: macos-latest
             target: "x86_64-apple-darwin"
-            asset_name: erglite-app-macos-x86_64.tar.gz
+            artifacts: |
+              target/x86_64-apple-darwin/release/bundle/dmg/*.dmg
+              target/x86_64-apple-darwin/release/bundle/app/*.app.tar.gz
           - name: macOS (aarch64)
             os: macos-latest
             target: "aarch64-apple-darwin"
-            asset_name: erglite-app-macos-aarch64.tar.gz
+            artifacts: |
+              target/aarch64-apple-darwin/release/bundle/dmg/*.dmg
+              target/aarch64-apple-darwin/release/bundle/app/*.app.tar.gz
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -59,7 +68,8 @@ jobs:
             libayatana-appindicator3-dev \
             libdbus-1-dev \
             pkg-config \
-            patchelf
+            patchelf \
+            rpm
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -74,7 +84,7 @@ jobs:
           npm ci
           npm run build
 
-      - name: Build Tauri app
+      - name: Build Tauri app with installers
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -84,64 +94,21 @@ jobs:
           releaseName: "ErgLite ${{ github.ref_name }}"
           releaseBody: |
             See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details.
-          releaseDraft: true
+          releaseDraft: false
           prerelease: false
           args: ${{ matrix.target != '' && format('--target {0} --features ble', matrix.target) || '--features ble' }}
 
-      - name: Extract binary for packaging
-        if: runner.os == 'Linux' || runner.os == 'Windows'
-        run: |
-          if [ -n "${{ matrix.target }}" ]; then
-            TARGET="${{ matrix.target }}"
-            BINARY_PATH="app/src-tauri/target/${TARGET}/release/erglite-app"
-            if [ "${{ runner.os }}" = "Windows" ]; then
-              BINARY_PATH="${BINARY_PATH}.exe"
-            fi
-          else
-            BINARY_PATH="app/src-tauri/target/release/erglite-app"
-          fi
-            
-          echo "Binary path: ${BINARY_PATH}"
-          ls -la "${BINARY_PATH}"
-           
-          mkdir -p "${{ github.workspace }}/release-pkg"
-          if [ "${{ runner.os }}" = "Windows" ]; then
-            cp "${BINARY_PATH}" "${{ github.workspace }}/release-pkg/erglite-app.exe"
-          else
-            cp "${BINARY_PATH}" "${{ github.workspace }}/release-pkg/erglite-app"
-          fi
-
-      - name: Package Linux binary
-        if: runner.os == 'Linux'
-        run: |
-          cd ${{ github.workspace }}
-          tar -czf erglite-app-linux.tar.gz -C release-pkg .
-
-      - name: Package Windows binary
-        if: runner.os == 'Windows'
-        run: |
-          cd "${{ github.workspace }}"
-          tar -czf erglite-app-windows.tar.gz -C release-pkg .
-
-      - name: Upload Linux artifact
-        if: runner.os == 'Linux'
+      - name: Upload installer artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: erglite-app-linux.tar.gz
-          path: erglite-app-linux.tar.gz
-          retention-days: 1
-
-      - name: Upload Windows artifact
-        if: runner.os == 'Windows'
-        uses: actions/upload-artifact@v4
-        with:
-          name: erglite-app-windows.tar.gz
-          path: erglite-app-windows.tar.gz
+          name: ${{ matrix.name }}-installers
+          path: ${{ matrix.artifacts }}
           retention-days: 1
 
   macos-universal:
-    name: macOS Universal Binary
+    name: macOS Universal Installers
     needs: build
+    if: runner.os == 'macOS'
     runs-on: macos-latest
     defaults:
       run:
@@ -150,30 +117,57 @@ jobs:
       - name: Download macOS artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: erglite-app-macos-*
+          pattern: macOS*-installers
           path: macos-artifacts
           merge-multiple: true
 
-      - name: Create universal binary
+      - name: Create universal DMG
         run: |
-          x86_64_BIN="macos-artifacts/erglite-app-macos-x86_64.tar.gz"
-          aarch64_BIN="macos-artifacts/erglite-app-macos-aarch64.tar.gz"
+          # Find the DMG files and app bundles from downloaded artifacts
+          X86_DMG=$(find macos-artifacts -name "*.dmg" -path "*x86_64*" | head -1)
+          ARM_DMG=$(find macos-artifacts -name "*.dmg" -path "*aarch64*" | head -1)
           
-          mkdir -p x86_64 aarch64 universal
-          tar -xzf "${x86_64_BIN}" -C x86_64
-          tar -xzf "${aarch64_BIN}" -C aarch64
+          echo "X86 DMG: $X86_DMG"
+          echo "ARM DMG: $ARM_DMG"
           
-          lipo -create -output universal/erglite-app x86_64/erglite-app aarch64/erglite-app
-          file universal/erglite-app
-          
-          cp x86_64/README.md universal/
-          tar -czf erglite-app-macos.tar.gz -C universal .
+          if [ -n "$X86_DMG" ] && [ -n "$ARM_DMG" ]; then
+            # Mount DMGs to extract .app bundles
+            mkdir -p x86_64 aarch64 universal
+            
+            hdiutil attach "$X86_DMG" -mountpoint x86_64/mnt -nobrowse -quiet
+            hdiutil attach "$ARM_DMG" -mountpoint aarch64/mnt -nobrowse -quiet
+            
+            X86_APP=$(find x86_64/mnt -name "*.app" -maxdepth 2 | head -1)
+            ARM_APP=$(find aarch64/mnt -name "*.app" -maxdepth 2 | head -1)
+            
+            echo "X86 App: $X86_APP"
+            echo "ARM App: $ARM_APP"
+            
+            if [ -n "$X86_APP" ] && [ -n "$ARM_APP" ]; then
+              mkdir -p universal
+              cp -R "$X86_APP" universal/
+              UNIVERSAL_APP="universal/$(basename "$X86_APP")"
+              lipo -create -output "$UNIVERSAL_APP/Contents/MacOS/ErgLite" "$X86_APP/Contents/MacOS/ErgLite" "$ARM_APP/Contents/MacOS/ErgLite"
+              
+              # Create universal DMG
+              hdiutil create -volname "ErgLite" -srcfolder universal -ov -format UDZO "ErgLite_universal.dmg"
+              echo "Universal DMG created"
+            else
+              echo "Could not find both app bundles"
+            fi
+            
+            hdiutil detach x86_64/mnt -quiet 2>/dev/null || true
+            hdiutil detach aarch64/mnt -quiet 2>/dev/null || true
+          else
+            echo "Could not find both DMGs"
+          fi
 
-      - name: Upload universal artifact
+      - name: Upload universal DMG
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: erglite-app-macos.tar.gz
-          path: erglite-app-macos.tar.gz
+          name: macOS-universal-installers
+          path: ErgLite_universal.dmg
           retention-days: 1
 
   release:
@@ -186,14 +180,14 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: erglite-app-*
+          pattern: *-installers
           path: artifacts
           merge-multiple: true
 
       - name: List artifacts
-        run: ls -la artifacts/
+        run: find artifacts -type f \( -name "*.deb" -o -name "*.rpm" -o -name "*.AppImage" -o -name "*.msi" -o -name "*.exe" -o -name "*.dmg" -o -name "*.app.tar.gz" \) | sort
 
-      - name: Create release
+      - name: Create release with installers
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
@@ -202,7 +196,11 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            artifacts/erglite-app-linux.tar.gz
-            artifacts/erglite-app-windows.tar.gz
-            artifacts/erglite-app-macos.tar.gz
+            artifacts/**/*.deb
+            artifacts/**/*.rpm
+            artifacts/**/*.AppImage
+            artifacts/**/*.msi
+            artifacts/**/*.exe
+            artifacts/**/*.dmg
+            artifacts/**/*.app.tar.gz
           generate_release_notes: false
