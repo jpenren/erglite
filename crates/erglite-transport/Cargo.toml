@@ -19,7 +19,7 @@ async-trait.workspace = true
 serde.workspace = true
 thiserror.workspace = true
 tokio.workspace = true
-btleplug = { version = "0.11", optional = true }
+btleplug = { version = "0.13", optional = true }
 futures = { version = "0.3", optional = true }
 uuid = { version = "1", optional = true }
 tracing = { workspace = true, optional = true }
