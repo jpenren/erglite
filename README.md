@@ -27,6 +27,35 @@ accounts, no cloud, no telemetry.
 Anything that depends on how a real trainer behaves is marked `HW-VERIFY` in the code and tracked in
 [`docs/hardware-testing.md`](docs/hardware-testing.md).
 
+## Interface
+
+The UI is built with Svelte 5 and runs in the browser (for development) or as a Tauri desktop app.
+
+| Screen | Description |
+|---|---|
+| **Session (Time)** | Structured ERG workout by time and intensity. Shows target power, cadence, heart rate, segment progress, and real-time metrics. |
+| **Session (Route)** | Route-based ride where trainer resistance follows the grade profile. Elevation map, distance, and power targets adapt to the route. |
+| **Workout Editor** | Visual builder for interval workouts. Add warm-up, steady, ramp, and interval blocks; drag to reorder; set duration and intensity (% FTP). |
+| **Route Editor** | Draw routes by placing waypoints on a map. Elevation is sampled automatically; grade segments drive trainer resistance. |
+| **Devices** | Scan for FTMS trainers over Bluetooth LE, connect/disconnect, view capabilities (ERG mode, simulation, cadence, power). |
+| **Library** | Browse saved workouts and routes. Duplicate, edit, delete, or start a ride. |
+| **History** | List of completed sessions with summary metrics (duration, avg power, TSS, NP, IF). Export to TCX. |
+| **Settings** | Rider profile (FTP, weight, bike weight, max HR), physics (Crr, CdA), language (EN/ES), theme (dark/light), data location. |
+
+### Screenshots
+
+| Session (Time) | Session (Route) |
+|---|---|
+| ![Session Time](design/screens/01-session-time.png) | ![Session Route](design/screens/02-session-route.png) |
+
+| Workout Editor | Route Editor |
+|---|---|
+| ![Workout Editor](design/screens/03-workout-editor.png) | ![Route Editor](design/screens/04-route-editor.png) |
+
+| Devices |
+|---|
+| ![Devices](design/screens/05-devices.png) |
+
 ## Quick start
 
 Requirements: Rust (stable), Node.js 22+. On Linux the Bluetooth backend needs `libdbus-1-dev` and `pkg-config`.
