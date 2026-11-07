@@ -124,6 +124,75 @@ After `cargo tauri build` or `cargo build --release`:
 
 No dev server needed—the frontend is embedded in the binary.
 
+## Installation from releases
+
+Pre-built binaries are available on the [releases page](https://github.com/jpenren/erglite/releases).
+
+### Linux
+
+Download the `.tar.gz` for your architecture:
+
+```bash
+# x86_64
+wget https://github.com/jpenren/erglite/releases/download/v0.1.0/erglite-app-linux-v0.1.0.tar.gz
+tar -xzf erglite-app-linux-v0.1.0.tar.gz
+./erglite-app
+```
+
+Or install the system package:
+
+```bash
+# Debian/Ubuntu
+sudo apt install ./ErgLite_0.1.0_amd64.deb
+
+# Fedora/RHEL
+sudo dnf install ./ErgLite-0.1.0-1.x86_64.rpm
+```
+
+**Note:** On Linux you may need to install WebKitGTK dependencies:
+
+```bash
+# Ubuntu/Debian
+sudo apt install libwebkit2gtk-4.1-0 libgtk-3-0 libayatana-appindicator3-1 librsvg2-2
+
+# Fedora
+sudo dnf install webkit2gtk4.1 gtk3 libayatana-appindicator-gtk3 librsvg2
+```
+
+### macOS
+
+Download the universal binary (works on both Intel and Apple Silicon):
+
+```bash
+wget https://github.com/jpenren/erglite/releases/download/v0.1.0/erglite-app-macos-v0.1.0.tar.gz
+tar -xzf erglite-app-macos-v0.1.0.tar.gz
+./erglite-app
+```
+
+Or open the `.dmg` and drag ErgLite to Applications.
+
+**Note:** On first run, macOS Gatekeeper may block the app. Allow it in:
+
+```bash
+# If blocked, run:
+xattr -d com.apple.quarantine /Applications/ErgLite.app
+```
+
+### Windows
+
+Download and extract:
+
+```powershell
+# PowerShell
+Invoke-WebRequest -Uri "https://github.com/jpenren/erglite/releases/download/v0.1.0/erglite-app-windows-v0.1.0.tar.gz" -OutFile "erglite-app-windows-v0.1.0.tar.gz"
+tar -xzf erglite-app-windows-v0.1.0.tar.gz
+.\erglite-app.exe
+```
+
+Or run the `.msi` installer for a system-wide install.
+
+**Note:** Requires [WebView2 Runtime](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) (pre-installed on Windows 11).
+
 ## Repository layout
 
 ```
