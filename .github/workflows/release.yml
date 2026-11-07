@@ -74,13 +74,13 @@ jobs:
           npm ci
           npm run build
 
-      - name: Build Tauri app (release binary)
+      - name: Build Tauri app (release binary with BLE)
         working-directory: app/src-tauri
         run: |
           if [ -n "${{ matrix.target }}" ]; then
-            cargo build --release --target ${{ matrix.target }}
+            cargo build --release --target ${{ matrix.target }} --features ble
           else
-            cargo build --release
+            cargo build --release --features ble
           fi
 
       - name: Package binary with README
