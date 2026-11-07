@@ -8,9 +8,8 @@ members = [
     "crates/erglite-formats",
     "crates/erglite-runtime",
     "crates/erglite-cli",
+    "app/src-tauri",
 ]
-# The Tauri shell has its own workspace because it needs system WebView libraries.
-exclude = ["app/src-tauri"]
 
 [workspace.package]
 version = "0.4.0"

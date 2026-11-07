@@ -6,9 +6,6 @@ edition = "2024"
 license = "MIT OR Apache-2.0"
 authors = ["ErgLite contributors"]
 
-# Standalone workspace: the shell needs system WebView libraries that the core crates do not.
-[workspace]
-
 [lib]
 name = "erglite_app_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
