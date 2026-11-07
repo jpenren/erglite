@@ -1,0 +1,33 @@
+/* SPDX-License-Identifier: MIT OR Apache-2.0 */
+:root, :root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0b1016; --bg-glow: rgba(242, 201, 76, 0.07);
+  --surface: #17202a; --surface-alt: #121a22; --surface-raised: #1d2834; --surface-selected: #223040;
+  --border: #354353; --border-subtle: #243140;
+  --text: #eaf0f6; --text-secondary: #c5cfda; --text-muted: #94a3b2;
+  --accent: #f2c94c; --accent-strong: #ffd964; --on-accent: #0b1016;
+  --ok: #3dbe7a; --danger: #eb5757; --danger-text: #ff8e8e; --info: #4c9aff;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 1px 0 rgba(255, 255, 255, 0.03) inset;
+  --zone-1: #7c8a99; --zone-2: #4c9aff; --zone-3: #3dbe7a; --zone-4: #f2c94c; --zone-5: #f2994a; --zone-6: #eb5757; --zone-7: #a78bfa;
+  --grade-descent-steep: #4c7dff; --grade-descent: #8fb8ff; --grade-flat: #9aa7b4;
+  --grade-climb: #f4a9d2; --grade-climb-hard: #e8589f; --grade-climb-very-hard: #b8125e;
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #eef2f6; --bg-glow: rgba(242, 160, 30, 0.1);
+  --surface: #ffffff; --surface-alt: #f6f8fb; --surface-raised: #ffffff; --surface-selected: #e6edf5;
+  --border: #c4cfdb; --border-subtle: #dbe3ec;
+  --text: #121a22; --text-secondary: #34424f; --text-muted: #5b6b7a;
+  --accent: #e0a100; --accent-strong: #c78d00; --on-accent: #101820;
+  --ok: #1f9d5b; --danger: #d03a3a; --danger-text: #b32d2d; --info: #2d7be0;
+  --shadow: 0 8px 24px rgba(30, 50, 80, 0.12);
+  --zone-1: #8a97a6; --zone-2: #3b84e6; --zone-3: #2fae6a; --zone-4: #e0a100; --zone-5: #e0782a; --zone-6: #d03a3a; --zone-7: #8b6ae0;
+  --grade-descent-steep: #3a64e0; --grade-descent: #7aa6f0; --grade-flat: #93a0ae;
+  --grade-climb: #f08cc0; --grade-climb-hard: #d8408a; --grade-climb-very-hard: #a01058;
+}
+:root {
+  --font-ui: 'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-num: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
+  --radius-tile: 18px; --radius-card: 16px; --radius-button: 12px; --radius-chip: 999px;
+  --control-height: 44px; --nav-width: 232px;
+}

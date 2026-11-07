@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "name": "10 km rolling",
+  "description": "A 10 km circuit with a climb to km 6 and a short ramp at km 9.",
+  "kind": "route",
+  "route": { "resolution_m": 100, "points": [
+    [0,100],[1000,100],[2000,115],[3000,140],[4000,170],[5000,210],
+    [6000,240],[7000,210],[8000,170],[9000,220],[10000,150] ] },
+  "segments": [ { "label": "Circuit", "end": { "distance_m": 10000 }, "control": { "grade": "from_route" } } ]
+}

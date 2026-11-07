@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "name": "Sweet Spot 3x8",
+  "description": "Warm-up, three 8 minute efforts at 95 % FTP, cool-down.",
+  "kind": "time",
+  "segments": [
+    { "label": "Warm-up", "end": { "time_s": 840 },
+      "control": { "power": { "from_pct_ftp": 45, "to_pct_ftp": 70 } } },
+    { "repeat": 3, "segments": [
+      { "label": "Work", "end": { "time_s": 480 }, "control": { "power": { "pct_ftp": 95 } }, "cadence_rpm": 90 },
+      { "label": "Rest", "end": { "time_s": 240 }, "control": { "power": { "pct_ftp": 55 } } } ] },
+    { "label": "Cool-down", "end": { "time_s": 720 },
+      "control": { "power": { "from_pct_ftp": 60, "to_pct_ftp": 45 } } }
+  ]
+}

@@ -1,0 +1,12 @@
+name: Bug report
+description: Something does not work as expected
+labels: [bug]
+body:
+  - type: textarea
+    attributes: { label: What happened, description: Steps to reproduce and what you expected }
+    validations: { required: true }
+  - type: input
+    attributes: { label: ErgLite version and operating system }
+    validations: { required: true }
+  - type: textarea
+    attributes: { label: Diagnostic log, description: "Settings > Export diagnostics (no personal data is included)" }

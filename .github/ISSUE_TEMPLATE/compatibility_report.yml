@@ -1,0 +1,16 @@
+name: Trainer compatibility report
+description: Tell us how a trainer works with ErgLite
+labels: [compatibility, hardware-test]
+body:
+  - type: input
+    attributes: { label: Trainer brand, model and firmware }
+    validations: { required: true }
+  - type: dropdown
+    attributes:
+      label: Connection
+      options: [Bluetooth FTMS, FE-C over Bluetooth, ANT+ USB]
+    validations: { required: true }
+  - type: textarea
+    attributes: { label: Output of `erglite-cli doctor`, description: Paste the anonymized report, render: text }
+  - type: textarea
+    attributes: { label: What worked and what did not, description: "ERG, grade simulation, cadence, reconnection..." }

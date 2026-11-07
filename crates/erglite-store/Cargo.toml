@@ -1,0 +1,19 @@
+[package]
+name = "erglite-store"
+description = "Local SQLite storage for ErgLite: profile, workouts, sessions and samples"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+erglite-core.workspace = true
+rusqlite = { version = "0.37", features = ["bundled"] }
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+uuid = { version = "1", features = ["v4"] }
+
+[lints]
+workspace = true

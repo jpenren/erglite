@@ -1,0 +1,33 @@
+[package]
+name = "erglite-app"
+version = "0.1.0"
+description = "ErgLite desktop app (Tauri shell)"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+authors = ["ErgLite contributors"]
+
+# Standalone workspace: the shell needs system WebView libraries that the core crates do not.
+[workspace]
+
+[lib]
+name = "erglite_app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[features]
+default = ["ble"]
+# Real Bluetooth LE trainers. HW-VERIFY: not yet validated on a ZPro.
+ble = ["erglite-transport/ble"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["rt", "sync", "time", "macros"] }
+erglite-core = { path = "../../crates/erglite-core" }
+erglite-formats = { path = "../../crates/erglite-formats" }
+erglite-runtime = { path = "../../crates/erglite-runtime" }
+erglite-store = { path = "../../crates/erglite-store" }
+erglite-transport = { path = "../../crates/erglite-transport" }

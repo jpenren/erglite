@@ -1,0 +1,12 @@
+<workout_file>
+  <author>ErgLite contributors</author>
+  <name>VO2max 4x4</name>
+  <description>Four 4 minute efforts at 115 % FTP.</description>
+  <sportType>bike</sportType>
+  <tags/>
+  <workout>
+    <Warmup Duration="600" PowerLow="0.45" PowerHigh="0.75"/>
+    <IntervalsT Repeat="4" OnDuration="240" OffDuration="240" OnPower="1.15" OffPower="0.50"/>
+    <Cooldown Duration="480" PowerLow="0.60" PowerHigh="0.40"/>
+  </workout>
+</workout_file>

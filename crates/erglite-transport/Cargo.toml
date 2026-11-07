@@ -1,0 +1,28 @@
+[package]
+name = "erglite-transport"
+description = "Trainer backends for ErgLite: simulated trainer and optional Bluetooth FTMS"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[features]
+default = []
+# Real Bluetooth LE backend (needs BlueZ/D-Bus on Linux). HW-VERIFY: not yet validated on a ZPro.
+ble = ["dep:btleplug", "dep:futures", "dep:uuid", "dep:tracing"]
+
+[dependencies]
+erglite-core.workspace = true
+erglite-ftms.workspace = true
+async-trait.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+btleplug = { version = "0.11", optional = true }
+futures = { version = "0.3", optional = true }
+uuid = { version = "1", optional = true }
+tracing = { workspace = true, optional = true }
+
+[lints]
+workspace = true

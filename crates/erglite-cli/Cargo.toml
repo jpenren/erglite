@@ -1,0 +1,28 @@
+[package]
+name = "erglite-cli"
+description = "ErgLite command line tools: simulate workouts, estimate routes, scan for trainers"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "erglite-cli"
+path = "src/main.rs"
+
+[features]
+default = []
+ble = ["erglite-transport/ble"]
+
+[dependencies]
+erglite-core.workspace = true
+erglite-formats.workspace = true
+erglite-runtime.workspace = true
+erglite-transport.workspace = true
+clap = { version = "4", features = ["derive"] }
+serde_json.workspace = true
+tokio = { workspace = true, features = ["rt-multi-thread"] }
+
+[lints]
+workspace = true

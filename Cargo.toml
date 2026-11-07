@@ -1,0 +1,49 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/erglite-core",
+    "crates/erglite-ftms",
+    "crates/erglite-transport",
+    "crates/erglite-store",
+    "crates/erglite-formats",
+    "crates/erglite-runtime",
+    "crates/erglite-cli",
+]
+# The Tauri shell has its own workspace because it needs system WebView libraries.
+exclude = ["app/src-tauri"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/OWNER/erglite"
+authors = ["ErgLite contributors"]
+
+[workspace.dependencies]
+erglite-core = { path = "crates/erglite-core" }
+erglite-ftms = { path = "crates/erglite-ftms" }
+erglite-transport = { path = "crates/erglite-transport" }
+erglite-store = { path = "crates/erglite-store" }
+erglite-formats = { path = "crates/erglite-formats" }
+erglite-runtime = { path = "crates/erglite-runtime" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tokio = { version = "1", features = ["rt", "sync", "time", "macros"] }
+async-trait = "0.1"
+tracing = "0.1"
+proptest = "1"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+
+[workspace.lints.clippy]
+unwrap_used = "warn"
+expect_used = "warn"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true

@@ -1,0 +1,28 @@
+/* SPDX-License-Identifier: MIT OR Apache-2.0
+   ErgLite design tokens, extracted from the interface proposal. Dark theme is the default. */
+:root {
+  /* Surfaces and text */
+  --bg: #0F1419;           --surface: #1A222C;       --surface-alt: #141B23;
+  --surface-selected: #1F2A36;  --border: #3A4654;   --border-subtle: #2A3440;
+  --text: #E8EDF2;         --text-secondary: #C5CFDA; --text-muted: #9AA7B4;
+  --accent: #F2C94C;       --on-accent: #0F1419;
+  --ok: #3DBE7A;           --danger: #EB5757;         --danger-text: #FF8E8E;
+  /* Power zones (Coggan 7 zones). Always shown with a text label. */
+  --zone-1: #7C8A99; --zone-2: #4C9AFF; --zone-3: #3DBE7A; --zone-4: #F2C94C;
+  --zone-5: #F2994A; --zone-6: #EB5757; --zone-7: #A78BFA;
+  /* Grade colors (route mode). Deliberately different hues from the power zones. */
+  --grade-descent-steep: #4C7DFF;  /* below -5 %  */
+  --grade-descent: #8FB8FF;        /* -5 to -2 %  */
+  --grade-flat: #9AA7B4;           /* -2 to 2 %   */
+  --grade-climb: #F4A9D2;          /* 2 to 4 %    */
+  --grade-climb-hard: #E8589F;     /* 4 to 6 %    */
+  --grade-climb-very-hard: #B8125E;/* above 6 %   */
+  /* Typography. Bundle the fonts locally (SIL OFL); the app never calls a font CDN. */
+  --font-ui: "Barlow", system-ui, sans-serif;
+  --font-numbers: "Barlow Condensed", "Barlow", sans-serif; /* use font-variant-numeric: tabular-nums */
+  /* Shape and spacing */
+  --radius-tile: 16px; --radius-card: 12px; --radius-button: 10px; --radius-chip: 20px;
+  --page-padding-session: 28px 48px; --page-padding-app: 28px 40px;
+  --control-height: 44px;  /* 48px on the session screen */
+  --nav-width: 200px;
+}

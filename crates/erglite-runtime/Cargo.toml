@@ -1,0 +1,21 @@
+[package]
+name = "erglite-runtime"
+description = "Session runner: connects the workout engine, a trainer backend and the local store"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+erglite-core.workspace = true
+erglite-store.workspace = true
+erglite-transport.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+tokio.workspace = true
+serde_json.workspace = true
+
+[lints]
+workspace = true
