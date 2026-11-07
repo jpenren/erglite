@@ -18,27 +18,27 @@ jobs:
             os: ubuntu-22.04
             target: ""
             artifacts: |
-              target/release/bundle/deb/*.deb
-              target/release/bundle/rpm/*.rpm
-              target/release/bundle/appimage/*.AppImage
+              app/src-tauri/target/release/bundle/deb/*.deb
+              app/src-tauri/target/release/bundle/rpm/*.rpm
+              app/src-tauri/target/release/bundle/appimage/*.AppImage
           - name: Windows
             os: windows-latest
             target: "x86_64-pc-windows-msvc"
             artifacts: |
-              target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
-              target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
+              app/src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
+              app/src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
           - name: macOS (x86_64)
             os: macos-latest
             target: "x86_64-apple-darwin"
             artifacts: |
-              target/x86_64-apple-darwin/release/bundle/dmg/*.dmg
-              target/x86_64-apple-darwin/release/bundle/app/*.app.tar.gz
+              app/src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/*.dmg
+              app/src-tauri/target/x86_64-apple-darwin/release/bundle/app/*.app.tar.gz
           - name: macOS (aarch64)
             os: macos-latest
             target: "aarch64-apple-darwin"
             artifacts: |
-              target/aarch64-apple-darwin/release/bundle/dmg/*.dmg
-              target/aarch64-apple-darwin/release/bundle/app/*.app.tar.gz
+              app/src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg
+              app/src-tauri/target/aarch64-apple-darwin/release/bundle/app/*.app.tar.gz
     runs-on: ${{ matrix.os }}
     defaults:
       run:
