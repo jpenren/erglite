@@ -14,41 +14,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: Linux (AppImage)
+          - name: Linux
             os: ubuntu-22.04
             target: ""
-            asset_name: ErgLite_${{ github.ref_name }}_amd64.AppImage
-            asset_type: appimage
-          - name: Linux (DEB)
-            os: ubuntu-22.04
-            target: ""
-            asset_name: ErgLite_${{ github.ref_name }}_amd64.deb
-            asset_type: deb
-          - name: Linux (RPM)
-            os: ubuntu-22.04
-            target: ""
-            asset_name: ErgLite-${{ github.ref_name }}-1.x86_64.rpm
-            asset_type: rpm
-          - name: Windows (MSI)
+            asset_name: erglite-app-linux-${{ github.ref_name }}.tar.gz
+          - name: Windows
             os: windows-latest
             target: ""
-            asset_name: ErgLite_${{ github.ref_name }}_x64_en-US.msi
-            asset_type: msi
-          - name: Windows (EXE)
-            os: windows-latest
-            target: ""
-            asset_name: ErgLite_${{ github.ref_name }}_x64-setup.exe
-            asset_type: nsis
-          - name: macOS (Universal DMG)
+            asset_name: erglite-app-windows-${{ github.ref_name }}.tar.gz
+          - name: macOS (Universal)
             os: macos-latest
             target: "--target universal-apple-darwin"
-            asset_name: ErgLite_${{ github.ref_name }}_universal.dmg
-            asset_type: dmg
-          - name: macOS (Universal App)
-            os: macos-latest
-            target: "--target universal-apple-darwin"
-            asset_name: ErgLite_${{ github.ref_name }}_universal.app.tar.gz
-            asset_type: app
+            asset_name: erglite-app-macos-${{ github.ref_name }}.tar.gz
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -75,8 +52,7 @@ jobs:
             libayatana-appindicator3-dev \
             libdbus-1-dev \
             pkg-config \
-            patchelf \
-            rpm
+            patchelf
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -91,31 +67,42 @@ jobs:
           npm ci
           npm run build
 
-      - name: Build Tauri app
-        uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          projectPath: app/src-tauri
-          tagName: ${{ github.ref_name }}
-          releaseName: "ErgLite ${{ github.ref_name }}"
-          releaseBody: |
-            See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details.
-          releaseDraft: true
-          prerelease: false
-          args: ${{ matrix.target }}
+      - name: Build Tauri app (release binary)
+        working-directory: app/src-tauri
+        run: cargo build --release ${{ matrix.target }}
 
-      - name: Upload additional assets (README, etc.)
-        if: always()
+      - name: Package binary with README
         run: |
-          # Copy README to release artifacts
-          cp README.md release-README.md
+          BINARY_NAME="erglite-app${{ runner.os == 'Windows' && '.exe' || '' }}"
+          BINARY_PATH="app/src-tauri/target/${{ matrix.target != '' && 'universal-apple-darwin' || 'x86_64-unknown-linux-gnu' }}/release/${BINARY_NAME}"
+          # On macOS universal, the binary is at a different path
+          if [ "${{ matrix.os }}" = "macos-latest" ]; then
+            BINARY_PATH="app/src-tauri/target/universal-apple-darwin/release/${BINARY_NAME}"
+          elif [ "${{ runner.os }}" = "Windows" ]; then
+            BINARY_PATH="app/src-tauri/target/x86_64-pc-windows-msvc/release/${BINARY_NAME}"
+          fi
+          
+          echo "Binary path: ${BINARY_PATH}"
+          ls -la "${BINARY_PATH}"
+          
+          # Create package directory
+          mkdir -p release-pkg
+          cp "${BINARY_PATH}" release-pkg/erglite-app${{ runner.os == 'Windows' && '.exe' || '' }}
+          cp README.md release-pkg/
+          
+          # Create tar.gz
+          tar -czf "${{ matrix.asset_name }}" -C release-pkg .
 
-  # Create final release with all artifacts
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset_name }}
+          path: ${{ matrix.asset_name }}
+          retention-days: 1
+
   release:
     name: Create Release
     needs: build
-    if: always()
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -123,17 +110,15 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: tauri-*
+          pattern: erglite-app-*
           path: artifacts
           merge-multiple: true
 
       - name: List artifacts
-        run: |
-          find artifacts -type f -name "*.AppImage" -o -name "*.deb" -o -name "*.rpm" -o -name "*.msi" -o -name "*.exe" -o -name "*.dmg" -o -name "*.app.tar.gz" | sort
+        run: ls -la artifacts/
 
-      - name: Create release with all assets
+      - name: Create release
         uses: softprops/action-gh-release@v2
-        if: always()
         with:
           tag_name: ${{ github.ref_name }}
           name: "ErgLite ${{ github.ref_name }}"
@@ -141,11 +126,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            artifacts/*.AppImage
-            artifacts/*.deb
-            artifacts/*.rpm
-            artifacts/*.msi
-            artifacts/*.exe
-            artifacts/*.dmg
-            artifacts/*.app.tar.gz
+            artifacts/erglite-app-linux-*.tar.gz
+            artifacts/erglite-app-windows-*.tar.gz
+            artifacts/erglite-app-macos-*.tar.gz
           generate_release_notes: false
