@@ -78,9 +78,9 @@ jobs:
         working-directory: app/src-tauri
         run: |
           if [ -n "${{ matrix.target }}" ]; then
-            cargo build --release --target ${{ matrix.target }} --features ble
+            cargo tauri build --target ${{ matrix.target }} --features ble
           else
-            cargo build --release --features ble
+            cargo tauri build --features ble
           fi
 
       - name: Package binary with README
