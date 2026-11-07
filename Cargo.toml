@@ -1,3 +1,11 @@
+[package]
+name = "erglite-workspace"
+version = "0.4.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/OWNER/erglite"
+authors = ["ErgLite contributors"]
+
 [workspace]
 resolver = "2"
 members = [
