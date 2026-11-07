@@ -74,53 +74,76 @@ jobs:
           npm ci
           npm run build
 
-      - name: Build Tauri app (release binary with BLE)
+      - name: Build Tauri app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: app/src-tauri
+          tagName: ${{ github.ref_name }}
+          releaseName: "ErgLite ${{ github.ref_name }}"
+          releaseBody: |
+            See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details.
+          releaseDraft: true
+          prerelease: false
+          args: --target ${{ matrix.target }} --features ble
+
+      - name: Extract binary for packaging
+        if: runner.os == 'Linux' || runner.os == 'Windows'
         working-directory: app/src-tauri
         run: |
           if [ -n "${{ matrix.target }}" ]; then
-            cargo tauri build --target ${{ matrix.target }} --features ble
-          else
-            cargo tauri build --features ble
-          fi
-
-      - name: Package binary with README
-        run: |
-          if [ -n "${{ matrix.target }}" ]; then
             TARGET="${{ matrix.target }}"
-            BINARY_PATH="app/src-tauri/target/${TARGET}/release/erglite-app"
+            BINARY_PATH="target/${TARGET}/release/erglite-app"
             if [ "${{ runner.os }}" = "Windows" ]; then
               BINARY_PATH="${BINARY_PATH}.exe"
             fi
           else
-            # Native build (Linux)
-            BINARY_PATH="app/src-tauri/target/release/erglite-app"
+            BINARY_PATH="target/release/erglite-app"
           fi
           
           echo "Binary path: ${BINARY_PATH}"
           ls -la "${BINARY_PATH}"
           
-          # Create package directory
-          mkdir -p release-pkg
+          mkdir -p ../release-pkg
           if [ "${{ runner.os }}" = "Windows" ]; then
-            cp "${BINARY_PATH}" release-pkg/erglite-app.exe
+            cp "${BINARY_PATH}" ../release-pkg/erglite-app.exe
           else
-            cp "${BINARY_PATH}" release-pkg/erglite-app
+            cp "${BINARY_PATH}" ../release-pkg/erglite-app
           fi
-          cp README.md release-pkg/
-          
-          # Create tar.gz
-          tar -czf "${{ matrix.asset_name }}" -C release-pkg .
 
-      - name: Upload artifact
+      - name: Package Linux binary
+        if: runner.os == 'Linux'
+        run: |
+          cd /home/runner/work/erglite/erglite
+          tar -czf erglite-app-linux.tar.gz -C release-pkg .
+
+      - name: Package Windows binary
+        if: runner.os == 'Windows'
+        run: |
+          cd ${{ github.workspace }}
+          tar -czf erglite-app-windows.tar.gz -C release-pkg .
+
+      - name: Upload Linux artifact
+        if: runner.os == 'Linux'
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.asset_name }}
-          path: ${{ matrix.asset_name }}
+          name: erglite-app-linux.tar.gz
+          path: erglite-app-linux.tar.gz
+          retention-days: 1
+
+      - name: Upload Windows artifact
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: erglite-app-windows.tar.gz
+          path: erglite-app-windows.tar.gz
           retention-days: 1
 
   macos-universal:
     name: macOS Universal Binary
     needs: build
+    if: runner.os == 'macOS'
     runs-on: macos-latest
     defaults:
       run:
@@ -138,21 +161,14 @@ jobs:
           x86_64_BIN="macos-artifacts/erglite-app-macos-x86_64.tar.gz"
           aarch64_BIN="macos-artifacts/erglite-app-macos-aarch64.tar.gz"
           
-          # Extract both
           mkdir -p x86_64 aarch64 universal
           tar -xzf "${x86_64_BIN}" -C x86_64
           tar -xzf "${aarch64_BIN}" -C aarch64
           
-          # Create universal binary with lipo
           lipo -create -output universal/erglite-app x86_64/erglite-app aarch64/erglite-app
-          
-          # Verify
           file universal/erglite-app
           
-          # Copy README
           cp x86_64/README.md universal/
-          
-          # Create universal tar.gz
           tar -czf erglite-app-macos.tar.gz -C universal .
 
       - name: Upload universal artifact
