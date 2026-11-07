@@ -100,15 +100,15 @@ jobs:
           else
             BINARY_PATH="app/src-tauri/target/release/erglite-app"
           fi
-           
+            
           echo "Binary path: ${BINARY_PATH}"
           ls -la "${BINARY_PATH}"
            
-          mkdir -p ${{ github.workspace }}/release-pkg
+          mkdir -p "${{ github.workspace }}/release-pkg"
           if [ "${{ runner.os }}" = "Windows" ]; then
-            cp "${BINARY_PATH}" ${{ github.workspace }}/release-pkg/erglite-app.exe
+            cp "${BINARY_PATH}" "${{ github.workspace }}/release-pkg/erglite-app.exe"
           else
-            cp "${BINARY_PATH}" ${{ github.workspace }}/release-pkg/erglite-app
+            cp "${BINARY_PATH}" "${{ github.workspace }}/release-pkg/erglite-app"
           fi
 
       - name: Package Linux binary
@@ -120,7 +120,7 @@ jobs:
       - name: Package Windows binary
         if: runner.os == 'Windows'
         run: |
-          cd ${{ github.workspace }}
+          cd "${{ github.workspace }}"
           tar -czf erglite-app-windows.tar.gz -C release-pkg .
 
       - name: Upload Linux artifact
