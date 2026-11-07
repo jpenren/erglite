@@ -78,6 +78,17 @@ jobs:
           cache: npm
           cache-dependency-path: app/ui/package-lock.json
 
+      - name: Set version from tag
+        run: |
+          TAG_VERSION=${GITHUB_REF_NAME#v}
+          echo "Setting version to $TAG_VERSION"
+          # Update root Cargo.toml
+          sed -i "s/version = \"0.1.0\"/version = \"$TAG_VERSION\"/" Cargo.toml
+          # Update app/src-tauri/Cargo.toml
+          sed -i "s/version = \"0.1.0\"/version = \"$TAG_VERSION\"/" app/src-tauri/Cargo.toml
+          # Update tauri.conf.json
+          sed -i "s/\"version\": \"0.1.0\"/\"version\": \"$TAG_VERSION\"/" app/src-tauri/tauri.conf.json
+
       - name: Install UI dependencies and build
         working-directory: app/ui
         run: |
