@@ -130,11 +130,11 @@ Pre-built binaries are available on the [releases page](https://github.com/jpenr
 
 ### Linux
 
-Download the `.tar.gz`:
+Download the latest `.tar.gz`:
 
 ```bash
-wget https://github.com/jpenren/erglite/releases/download/v0.1.0/erglite-app-linux-v0.1.0.tar.gz
-tar -xzf erglite-app-linux-v0.1.0.tar.gz
+wget https://github.com/jpenren/erglite/releases/latest/download/erglite-app-linux.tar.gz
+tar -xzf erglite-app-linux.tar.gz
 ./erglite-app
 ```
 
@@ -150,11 +150,11 @@ sudo dnf install webkit2gtk4.1 gtk3 libayatana-appindicator-gtk3 librsvg2
 
 ### macOS
 
-Download the universal binary (works on both Intel and Apple Silicon):
+Download the latest universal binary (works on both Intel and Apple Silicon):
 
 ```bash
-wget https://github.com/jpenren/erglite/releases/download/v0.1.0/erglite-app-macos-v0.1.0.tar.gz
-tar -xzf erglite-app-macos-v0.1.0.tar.gz
+wget https://github.com/jpenren/erglite/releases/latest/download/erglite-app-macos.tar.gz
+tar -xzf erglite-app-macos.tar.gz
 ./erglite-app
 ```
 
@@ -167,12 +167,12 @@ xattr -d com.apple.quarantine /Applications/ErgLite.app
 
 ### Windows
 
-Download and extract:
+Download and extract the latest:
 
 ```powershell
 # PowerShell
-Invoke-WebRequest -Uri "https://github.com/jpenren/erglite/releases/download/v0.1.0/erglite-app-windows-v0.1.0.tar.gz" -OutFile "erglite-app-windows-v0.1.0.tar.gz"
-tar -xzf erglite-app-windows-v0.1.0.tar.gz
+Invoke-WebRequest -Uri "https://github.com/jpenren/erglite/releases/latest/download/erglite-app-windows.tar.gz" -OutFile "erglite-app-windows.tar.gz"
+tar -xzf erglite-app-windows.tar.gz
 .\erglite-app.exe
 ```
 

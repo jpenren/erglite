@@ -17,19 +17,19 @@ jobs:
           - name: Linux
             os: ubuntu-22.04
             target: ""
-            asset_name: erglite-app-linux-${{ github.ref_name }}.tar.gz
+            asset_name: erglite-app-linux.tar.gz
           - name: Windows
             os: windows-latest
             target: "x86_64-pc-windows-msvc"
-            asset_name: erglite-app-windows-${{ github.ref_name }}.tar.gz
+            asset_name: erglite-app-windows.tar.gz
           - name: macOS (x86_64)
             os: macos-latest
             target: "x86_64-apple-darwin"
-            asset_name: erglite-app-macos-x86_64-${{ github.ref_name }}.tar.gz
+            asset_name: erglite-app-macos-x86_64.tar.gz
           - name: macOS (aarch64)
             os: macos-latest
             target: "aarch64-apple-darwin"
-            asset_name: erglite-app-macos-aarch64-${{ github.ref_name }}.tar.gz
+            asset_name: erglite-app-macos-aarch64.tar.gz
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -135,8 +135,8 @@ jobs:
 
       - name: Create universal binary
         run: |
-          x86_64_BIN="macos-artifacts/erglite-app-macos-x86_64-${{ github.ref_name }}.tar.gz"
-          aarch64_BIN="macos-artifacts/erglite-app-macos-aarch64-${{ github.ref_name }}.tar.gz"
+          x86_64_BIN="macos-artifacts/erglite-app-macos-x86_64.tar.gz"
+          aarch64_BIN="macos-artifacts/erglite-app-macos-aarch64.tar.gz"
           
           # Extract both
           mkdir -p x86_64 aarch64 universal
@@ -153,13 +153,13 @@ jobs:
           cp x86_64/README.md universal/
           
           # Create universal tar.gz
-          tar -czf erglite-app-macos-${{ github.ref_name }}.tar.gz -C universal .
+          tar -czf erglite-app-macos.tar.gz -C universal .
 
       - name: Upload universal artifact
         uses: actions/upload-artifact@v4
         with:
-          name: erglite-app-macos-${{ github.ref_name }}.tar.gz
-          path: erglite-app-macos-${{ github.ref_name }}.tar.gz
+          name: erglite-app-macos.tar.gz
+          path: erglite-app-macos.tar.gz
           retention-days: 1
 
   release:
@@ -188,7 +188,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            artifacts/erglite-app-linux-*.tar.gz
-            artifacts/erglite-app-windows-*.tar.gz
-            artifacts/erglite-app-macos-${{ github.ref_name }}.tar.gz
+            artifacts/erglite-app-linux.tar.gz
+            artifacts/erglite-app-windows.tar.gz
+            artifacts/erglite-app-macos.tar.gz
           generate_release_notes: false
