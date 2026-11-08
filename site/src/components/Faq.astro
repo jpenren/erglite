@@ -1,0 +1,173 @@
+---
+import Icon from './Icon.astro';
+import { faqs } from '../data/faqs';
+---
+
+<section class="section faq" id="faq">
+  <div class="container faq__grid">
+    <div class="faq__head reveal">
+      <span class="eyebrow">Frequently asked questions</span>
+      <h2>What people usually ask.</h2>
+      <p class="lede">
+        If something isn't clear, the repository is the best place to ask questions and follow the
+        project's development.
+      </p>
+      <a
+        class="text-link faq__link"
+        href="https://github.com/jpenren/erglite/issues"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Ask on GitHub
+        <Icon name="arrow-up-right" size={15} />
+      </a>
+    </div>
+
+    <div class="faq__list reveal" data-delay="1">
+      {
+        faqs.map((faq) => (
+          <details class="faq__item" name="faq">
+            <summary>
+              <span>{faq.question}</span>
+              <span class="faq__icon" aria-hidden="true">+</span>
+            </summary>
+            <div class="faq__body">
+              <p>{faq.answer}</p>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq {
+    border-top: 1px solid var(--border-subtle);
+    background: linear-gradient(180deg, var(--bg) 0%, #0c1218 100%);
+  }
+
+  .faq__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(44px, 7vw, 100px);
+    align-items: start;
+  }
+
+  .faq__head {
+    position: sticky;
+    top: calc(var(--header-height) + 34px);
+  }
+
+  .faq__head h2 {
+    margin-top: 16px;
+    font-size: clamp(36px, 4.6vw, 54px);
+  }
+
+  .faq__head .lede {
+    margin-top: 20px;
+    font-size: 16px;
+  }
+
+  .faq__link {
+    margin-top: 24px;
+    font-size: 15px;
+    text-decoration: none;
+  }
+
+  .faq__list {
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .faq__item {
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .faq__item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    min-height: 66px;
+    padding: 18px 2px;
+    color: var(--text);
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.35;
+    cursor: pointer;
+    list-style: none;
+    transition: color 160ms ease;
+  }
+
+  .faq__item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__item summary:hover {
+    color: var(--accent);
+  }
+
+  .faq__icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    color: var(--text-secondary);
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1;
+    transition:
+      background-color 160ms ease,
+      border-color 160ms ease,
+      color 160ms ease,
+      transform 160ms ease;
+  }
+
+  .faq__item[open] .faq__icon {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on-accent);
+    transform: rotate(180deg);
+  }
+
+  .faq__item[open] summary {
+    color: var(--text);
+  }
+
+  .faq__body {
+    padding: 0 46px 22px 2px;
+  }
+
+  .faq__body p {
+    color: var(--text-muted);
+    font-size: 15.5px;
+    line-height: 1.65;
+  }
+
+  @media (max-width: 860px) {
+    .faq__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .faq__head {
+      position: static;
+    }
+
+    .faq__head .lede {
+      max-width: 620px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .faq__item summary {
+      font-size: 16px;
+    }
+
+    .faq__body {
+      padding-right: 12px;
+    }
+  }
+</style>

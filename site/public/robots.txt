@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jpenren.github.io/erglite/sitemap-index.xml

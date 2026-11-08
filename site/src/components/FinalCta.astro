@@ -1,0 +1,209 @@
+---
+import Icon from './Icon.astro';
+---
+
+<section class="final" aria-labelledby="final-title">
+  <div class="final__grid" aria-hidden="true"></div>
+  <div class="final__glow" aria-hidden="true"></div>
+
+  <div class="final__profile" aria-hidden="true">
+    <svg viewBox="0 0 1440 330" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="route-line" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#8FB8FF" />
+          <stop offset="0.35" stop-color="#F4A9D2" />
+          <stop offset="0.62" stop-color="#E8589F" />
+          <stop offset="0.82" stop-color="#F2C94C" />
+          <stop offset="1" stop-color="#4C9AFF" />
+        </linearGradient>
+      </defs>
+      <g opacity="0.34">
+        <polygon points="0,330 0,286 120,286 120,330" fill="#9AA7B4" />
+        <polygon points="120,330 120,286 240,258 240,330" fill="#9AA7B4" />
+        <polygon points="240,330 240,258 360,232 360,330" fill="#F4A9D2" />
+        <polygon points="360,330 360,232 480,198 480,330" fill="#F4A9D2" />
+        <polygon points="480,330 480,198 600,150 600,330" fill="#E8589F" />
+        <polygon points="600,330 600,150 720,122 720,330" fill="#E8589F" />
+        <polygon points="720,330 720,122 840,160 840,330" fill="#F4A9D2" />
+        <polygon points="840,330 840,160 960,210 960,330" fill="#8FB8FF" />
+        <polygon points="960,330 960,210 1080,172 1080,330" fill="#8FB8FF" />
+        <polygon points="1080,330 1080,172 1200,118 1200,330" fill="#E8589F" />
+        <polygon points="1200,330 1200,118 1320,206 1320,330" fill="#8FB8FF" />
+        <polygon points="1320,330 1320,206 1440,254 1440,330" fill="#4C7DFF" />
+      </g>
+      <polyline
+        class="final__line"
+        points="0,286 120,286 240,258 360,232 480,198 600,150 720,122 840,160 960,210 1080,172 1200,118 1320,206 1440,254"
+        fill="none"
+        stroke="url(#route-line)"
+        stroke-width="2.5"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </div>
+
+  <div class="container final__inner reveal">
+    <span class="eyebrow">Your next workout</span>
+    <h2 id="final-title">Your next interval won't ride itself.</h2>
+    <p class="final__lede">
+      Download ErgLite, connect your trainer and start that workout you've been thinking about
+      for days.
+    </p>
+
+    <div class="final__actions">
+      <a class="button button--primary" href="#install" data-hero-download>
+        <Icon name="download" size={18} />
+        Download free
+      </a>
+      <a
+        class="button button--ghost"
+        href="https://github.com/jpenren/erglite"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Icon name="github" size={18} />
+        View on GitHub
+      </a>
+    </div>
+
+    <p class="final__meta">
+      <Icon name="check-circle" size={15} />
+      Windows · macOS · Linux
+      <span aria-hidden="true">·</span>
+      No account
+      <span aria-hidden="true">·</span>
+      No card
+    </p>
+  </div>
+</section>
+
+<style>
+  .final {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(104px, 12vw, 160px) clamp(120px, 14vw, 180px);
+    background:
+      radial-gradient(60% 70% at 50% 20%, rgba(242, 201, 76, 0.1), transparent 68%),
+      linear-gradient(180deg, #0c1218, #0a0f14);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .final__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 70% 76% at 50% 44%, #000 8%, transparent 78%);
+    pointer-events: none;
+  }
+
+  .final__glow {
+    position: absolute;
+    top: 4%;
+    left: 50%;
+    width: min(76vw, 800px);
+    height: 320px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(242, 201, 76, 0.13), transparent 68%);
+    filter: blur(36px);
+    pointer-events: none;
+  }
+
+  .final__profile {
+    position: absolute;
+    inset: auto 0 0;
+    height: min(34vw, 330px);
+    opacity: 0.55;
+    mask-image: linear-gradient(180deg, transparent 0%, #000 42%, #000 100%);
+    pointer-events: none;
+  }
+
+  .final__profile svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .final__line {
+    stroke-dasharray: 3 8;
+    animation: route-dash 26s linear infinite;
+  }
+
+  @keyframes route-dash {
+    to {
+      stroke-dashoffset: -220;
+    }
+  }
+
+  .final__inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 880px;
+    text-align: center;
+  }
+
+  .final__inner .eyebrow {
+    justify-content: center;
+  }
+
+  .final h2 {
+    margin-top: 18px;
+    font-size: clamp(44px, 7vw, 84px);
+    line-height: 0.98;
+  }
+
+  .final__lede {
+    max-width: 620px;
+    margin-top: 24px;
+    color: var(--text-secondary);
+    font-size: clamp(17px, 1.6vw, 20px);
+    line-height: 1.6;
+    text-wrap: balance;
+  }
+
+  .final__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 34px;
+  }
+
+  .final__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 26px;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  .final__meta svg {
+    color: var(--ok);
+  }
+
+  @media (max-width: 640px) {
+    .final__actions {
+      width: 100%;
+    }
+
+    .final__actions .button {
+      flex: 1 1 220px;
+    }
+
+    .final__profile {
+      height: 44vw;
+    }
+  }
+
+  @media (max-width: 430px) {
+    .final__actions .button {
+      flex-basis: 100%;
+    }
+  }
+</style>

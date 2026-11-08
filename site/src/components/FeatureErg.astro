@@ -1,0 +1,192 @@
+---
+import AppWindow from './AppWindow.astro';
+import Icon from './Icon.astro';
+import workoutEditor from '../assets/screens/03-workout-editor.png';
+
+const workouts = [
+  { label: 'Warm-up', color: 'var(--zone-1)' },
+  { label: 'Sweet spot', color: 'var(--zone-4)' },
+  { label: 'Threshold', color: 'var(--zone-4)' },
+  { label: 'VO₂max', color: 'var(--zone-6)' },
+] as const;
+---
+
+<section class="section erg" id="features">
+  <div class="container erg__grid">
+    <div class="erg__copy reveal">
+      <span class="eyebrow">ERG workouts</span>
+      <h2>Intervals that adjust themselves.</h2>
+      <p class="lede">
+        Build the workout once and let the trainer handle the rest. ErgLite holds the target power
+        block after block, tells you what's coming and lets you adjust intensity without getting
+        off the bike.
+      </p>
+
+      <ul class="checklist">
+        <li>
+          <span class="checklist__icon"><Icon name="check" size={14} /></span>
+          <span>Warm-up, ramps, intervals and recovery in one visual editor.</span>
+        </li>
+        <li>
+          <span class="checklist__icon"><Icon name="check" size={14} /></span>
+          <span>Targets in % FTP or watts, with suggested cadence.</span>
+        </li>
+        <li>
+          <span class="checklist__icon"><Icon name="check" size={14} /></span>
+          <span>Adjust intensity by ±5% mid-session, without stopping the workout.</span>
+        </li>
+      </ul>
+
+      <div class="erg__tags" aria-label="Workout types">
+        <span class="erg__tags-label">For the full spectrum</span>
+        <ul>
+          {
+            workouts.map((workout) => (
+              <li>
+                <i style={`background:${workout.color}`} aria-hidden="true" />
+                {workout.label}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div class="erg__visual reveal" data-delay="1">
+      <div class="erg__aura" aria-hidden="true"></div>
+      <AppWindow
+        src={workoutEditor}
+        alt="ErgLite workout editor with warm-up, sweet spot and recovery blocks, plus duration and TSS totals"
+        title="Workout editor · Sweet Spot 3×8"
+        tag="Workout"
+        sizes="(max-width: 900px) 94vw, 700px"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .erg {
+    overflow: hidden;
+  }
+
+  .erg::before {
+    content: '';
+    position: absolute;
+    top: 12%;
+    right: -18%;
+    width: 720px;
+    height: 720px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(242, 201, 76, 0.06), transparent 68%);
+    pointer-events: none;
+  }
+
+  .erg__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: clamp(44px, 7vw, 96px);
+  }
+
+  .erg__copy h2 {
+    margin-top: 16px;
+    font-size: clamp(38px, 5vw, 60px);
+  }
+
+  .erg__copy .lede {
+    margin-top: 22px;
+  }
+
+  .checklist {
+    display: grid;
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    color: var(--text-secondary);
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .checklist__icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 24px;
+    height: 24px;
+    margin-top: 1px;
+    border: 1px solid rgba(242, 201, 76, 0.28);
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .erg__tags {
+    margin-top: 36px;
+    padding-top: 26px;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .erg__tags-label {
+    display: block;
+    margin-bottom: 13px;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .erg__tags ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .erg__tags li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 34px;
+    padding: 4px 13px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 999px;
+    background: rgba(26, 34, 44, 0.65);
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .erg__tags i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+  }
+
+  .erg__visual {
+    position: relative;
+  }
+
+  .erg__aura {
+    position: absolute;
+    inset: 8% -8% -12%;
+    z-index: -1;
+    background: radial-gradient(55% 55% at 52% 52%, rgba(242, 201, 76, 0.13), transparent 72%);
+    filter: blur(48px);
+  }
+
+  @media (max-width: 980px) {
+    .erg__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .erg__visual {
+      max-width: 760px;
+    }
+  }
+</style>

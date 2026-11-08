@@ -1,0 +1,159 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  title?: string;
+  tag?: string;
+  loading?: 'lazy' | 'eager';
+  priority?: boolean;
+  sizes?: string;
+  widths?: number[];
+  class?: string;
+}
+
+const {
+  src,
+  alt,
+  title = 'ErgLite',
+  tag,
+  loading = 'lazy',
+  priority = false,
+  sizes = '(max-width: 900px) 92vw, 760px',
+  widths = [560, 840, 1200],
+  class: className,
+} = Astro.props;
+---
+
+<figure class:list={['app-window', className]}>
+  <div class="app-window__bar" aria-hidden="true">
+    <span class="app-window__dots"><i></i><i></i><i></i></span>
+    <span class="app-window__title">{title}</span>
+    {tag && <span class="app-window__tag">{tag}</span>}
+  </div>
+  <div class="app-window__screen">
+    <Image
+      src={src}
+      alt={alt}
+      widths={widths}
+      sizes={sizes}
+      format="webp"
+      quality={84}
+      loading={loading}
+      fetchpriority={priority ? 'high' : 'auto'}
+      decoding="async"
+    />
+  </div>
+</figure>
+
+<style>
+  .app-window {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(58, 70, 84, 0.9);
+    border-radius: 16px;
+    background: var(--surface-alt);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.025) inset,
+      0 40px 90px -36px rgba(0, 0, 0, 0.95);
+  }
+
+  .app-window::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 18%);
+  }
+
+  .app-window__bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 38px;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: #111821;
+  }
+
+  .app-window__dots {
+    display: flex;
+    gap: 6px;
+    flex: 1;
+    min-width: 54px;
+  }
+
+  .app-window__dots i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+
+  .app-window__dots i:nth-child(1) {
+    background: rgba(235, 87, 87, 0.7);
+  }
+
+  .app-window__dots i:nth-child(2) {
+    background: rgba(242, 201, 76, 0.7);
+  }
+
+  .app-window__dots i:nth-child(3) {
+    background: rgba(61, 190, 122, 0.7);
+  }
+
+  .app-window__title {
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .app-window__tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-width: 54px;
+    justify-self: end;
+    color: var(--text-muted);
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .app-window__screen {
+    position: relative;
+    background: var(--bg);
+    aspect-ratio: 16 / 9;
+  }
+
+  .app-window__screen :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  @media (max-width: 640px) {
+    .app-window {
+      border-radius: 12px;
+    }
+
+    .app-window__bar {
+      height: 32px;
+    }
+
+    .app-window__title {
+      font-size: 11px;
+    }
+  }
+</style>

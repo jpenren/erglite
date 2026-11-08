@@ -1,0 +1,245 @@
+---
+import AppWindow from './AppWindow.astro';
+import Icon from './Icon.astro';
+import sessionTime from '../assets/screens/01-session-time.png';
+---
+
+<section class="hero" id="top">
+  <div class="hero__grid" aria-hidden="true"></div>
+  <div class="hero__beam" aria-hidden="true"></div>
+
+  <div class="container hero__inner">
+    <div class="hero__copy reveal">
+      <span class="pill">
+        <span class="dot"></span>
+        Structured training · No subscription
+      </span>
+
+      <h1>
+        Your trainer. Your plan.<br />
+        <span class="accent">Zero subscriptions.</span>
+      </h1>
+
+      <p class="hero__lede">
+        ErgLite turns your smart trainer into a real coach: power-based workouts, gradient routes
+        and all your data on your own computer. No accounts, no cloud and no monthly fees.
+      </p>
+
+      <div class="hero__actions">
+        <a class="button button--primary" href="#install" data-hero-download>
+          <Icon name="download" />
+          <span data-hero-download-label>Download free</span>
+        </a>
+        <a class="button button--ghost" href="#how-it-works">
+          <Icon name="play" size={17} />
+          See how it works
+        </a>
+      </div>
+
+      <ul class="hero__meta" aria-label="Available on">
+        <li><Icon name="windows" size={16} /> Windows</li>
+        <li><Icon name="apple" size={16} /> macOS</li>
+        <li><Icon name="terminal" size={16} /> Linux</li>
+        <li class="hero__meta-sep" aria-hidden="true"></li>
+        <li class="hero__meta-free"><Icon name="check-circle" size={16} /> Free and open source</li>
+      </ul>
+    </div>
+
+    <div class="hero__visual reveal" data-delay="1">
+      <div class="hero__aura" aria-hidden="true"></div>
+
+      <AppWindow
+        src={sessionTime}
+        alt="ErgLite session in ERG mode showing power, cadence, heart rate and the workout profile"
+        title="Session · Sweet Spot 3×8"
+        tag="ERG"
+        loading="eager"
+        priority
+        widths={[720, 1100, 1440]}
+        sizes="(max-width: 900px) 94vw, 1120px"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: clamp(64px, 8vw, 112px);
+    background:
+      radial-gradient(70% 44% at 50% -4%, rgba(242, 201, 76, 0.11), transparent 72%),
+      linear-gradient(180deg, #0b1015 0%, var(--bg) 28%);
+  }
+
+  .hero__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(ellipse 78% 62% at 50% 22%, #000 18%, transparent 76%);
+    pointer-events: none;
+  }
+
+  .hero__beam {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: min(70vw, 900px);
+    height: 480px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(242, 201, 76, 0.09), transparent 68%);
+    filter: blur(10px);
+    pointer-events: none;
+  }
+
+  .hero__inner {
+    position: relative;
+    padding-top: calc(var(--header-height) + clamp(56px, 7vw, 96px));
+  }
+
+  .hero__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero h1 {
+    margin-top: 26px;
+    max-width: 1050px;
+    font-size: clamp(50px, 8.3vw, 98px);
+    line-height: 0.94;
+    letter-spacing: -0.048em;
+  }
+
+  .hero h1 .accent {
+    display: inline-block;
+  }
+
+  .hero__lede {
+    max-width: 760px;
+    margin-top: 28px;
+    color: var(--text-secondary);
+    font-size: clamp(17px, 1.65vw, 21px);
+    line-height: 1.62;
+    text-wrap: balance;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 36px;
+  }
+
+  .hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 14px 22px;
+    margin-top: 30px;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .hero__meta li {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .hero__meta svg {
+    opacity: 0.8;
+  }
+
+  .hero__meta-sep {
+    width: 1px;
+    height: 16px;
+    background: var(--border-subtle);
+  }
+
+  .hero__meta-free {
+    color: var(--text-secondary);
+  }
+
+  .hero__meta-free svg {
+    color: var(--ok);
+    opacity: 1;
+  }
+
+  .hero__visual {
+    position: relative;
+    max-width: 1120px;
+    margin: clamp(52px, 7vw, 86px) auto 0;
+  }
+
+  .hero__aura {
+    position: absolute;
+    inset: -7% -4% -14%;
+    z-index: -1;
+    background:
+      radial-gradient(48% 54% at 50% 46%, rgba(242, 201, 76, 0.16), transparent 72%),
+      radial-gradient(40% 40% at 76% 70%, rgba(76, 154, 255, 0.1), transparent 72%);
+    filter: blur(52px);
+    pointer-events: none;
+  }
+
+  @media (max-width: 760px) {
+    .hero {
+      padding-bottom: 56px;
+    }
+
+    .hero__inner {
+      padding-top: calc(var(--header-height) + 46px);
+    }
+
+    .hero h1 {
+      margin-top: 20px;
+      font-size: clamp(43px, 12.4vw, 64px);
+    }
+
+    .hero__lede {
+      margin-top: 22px;
+      font-size: 17px;
+    }
+
+    .hero__actions {
+      margin-top: 28px;
+      width: 100%;
+    }
+
+    .hero__actions .button {
+      flex: 1 1 210px;
+    }
+
+    .hero__meta {
+      gap: 10px 16px;
+      margin-top: 24px;
+      font-size: 13px;
+    }
+
+    .hero__meta-sep {
+      display: none;
+    }
+
+    .hero__visual {
+      margin-top: 42px;
+    }
+  }
+
+  @media (max-width: 440px) {
+    .hero h1 {
+      font-size: 40px;
+    }
+
+    .hero__actions .button {
+      flex-basis: 100%;
+    }
+  }
+</style>

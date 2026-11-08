@@ -1,0 +1,89 @@
+---
+import Icon from './Icon.astro';
+
+const items = [
+  { icon: 'check-circle', label: 'No subscriptions' },
+  { icon: 'database', label: '100% local data' },
+  { icon: 'lock', label: 'No accounts or cloud' },
+  { icon: 'bluetooth', label: 'Bluetooth FTMS trainers' },
+  { icon: 'route', label: 'Import ZWO and GPX' },
+  { icon: 'globe', label: 'English and Spanish' },
+] as const;
+---
+
+<section class="trust" aria-label="What makes ErgLite different">
+  <div class="container">
+    <ul class="trust__list">
+      {
+        items.map((item) => (
+          <li>
+            <Icon name={item.icon} size={18} />
+            <span>{item.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .trust {
+    border-block: 1px solid var(--border-subtle);
+    background: rgba(20, 27, 35, 0.55);
+  }
+
+  .trust__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px 0;
+  }
+
+  .trust__list li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 18px clamp(12px, 2vw, 26px);
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+
+  .trust__list li + li {
+    border-left: 1px solid var(--border-subtle);
+  }
+
+  .trust__list svg {
+    color: var(--accent);
+    opacity: 0.85;
+  }
+
+  @media (max-width: 980px) {
+    .trust__list li {
+      padding: 14px 16px;
+    }
+
+    .trust__list li + li {
+      border-left: 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .trust__list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      justify-items: start;
+      gap: 0;
+      padding-block: 8px;
+    }
+
+    .trust__list li {
+      padding: 11px 4px;
+      font-size: 12px;
+      white-space: normal;
+    }
+  }
+</style>

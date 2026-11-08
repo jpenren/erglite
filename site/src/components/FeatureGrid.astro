@@ -1,0 +1,180 @@
+---
+import Icon from './Icon.astro';
+
+const features = [
+  {
+    icon: 'list',
+    title: 'Library',
+    text: 'Saved workouts and routes, ready to repeat. Duplicate, edit or start a session in two clicks.',
+  },
+  {
+    icon: 'clock',
+    title: 'History',
+    text: 'Every session with average power, NP, IF and TSS. Review your progress and export to TCX whenever you want.',
+  },
+  {
+    icon: 'bluetooth',
+    title: 'Devices',
+    text: 'Trainer and sensors over Bluetooth, with clear status and a warning if another app is using the trainer.',
+  },
+  {
+    icon: 'sliders',
+    title: 'Your profile',
+    text: 'FTP, weight, CdA and max heart rate. Session numbers adapt to you.',
+  },
+  {
+    icon: 'shield',
+    title: 'Private by design',
+    text: 'Your workouts live in a local database. No account, no cloud and no telemetry.',
+  },
+  {
+    icon: 'palette',
+    title: 'Your way',
+    text: 'English and Spanish, light and dark themes, and the data folder you choose.',
+  },
+] as const;
+---
+
+<section class="section features" aria-labelledby="features-title">
+  <div class="container">
+    <div class="features__head reveal">
+      <div>
+        <span class="eyebrow">Everything else</span>
+        <h2 id="features-title">The session is only part of it.</h2>
+      </div>
+      <p class="features__intro">
+        A complete desktop app, with no extra screens and no features behind a paywall.
+      </p>
+    </div>
+
+    <div class="features__grid">
+      {
+        features.map((feature, index) => (
+          <article class="feature-card reveal" data-delay={index % 3 === 0 ? '0' : index % 3 === 1 ? '1' : '2'}>
+            <span class="feature-card__icon">
+              <Icon name={feature.icon} size={21} />
+            </span>
+            <h3>{feature.title}</h3>
+            <p>{feature.text}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .features__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+
+  .features__head h2 {
+    margin-top: 16px;
+    font-size: clamp(38px, 5vw, 60px);
+  }
+
+  .features__intro {
+    max-width: 360px;
+    padding-bottom: 6px;
+    color: var(--text-muted);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .features__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .feature-card {
+    position: relative;
+    padding: 26px 26px 28px;
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(26, 34, 44, 0.62), rgba(16, 22, 29, 0.7));
+    transition:
+      transform 220ms ease,
+      border-color 220ms ease,
+      background-color 220ms ease;
+  }
+
+  .feature-card::after {
+    content: '';
+    position: absolute;
+    top: -70px;
+    right: -70px;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(242, 201, 76, 0.1), transparent 68%);
+    opacity: 0;
+    transition: opacity 240ms ease;
+    pointer-events: none;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border);
+  }
+
+  .feature-card:hover::after {
+    opacity: 1;
+  }
+
+  .feature-card__icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(242, 201, 76, 0.2);
+    border-radius: 12px;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .feature-card h3 {
+    margin-top: 20px;
+    font-size: 22px;
+    letter-spacing: -0.025em;
+  }
+
+  .feature-card p {
+    margin-top: 9px;
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.62;
+  }
+
+  @media (max-width: 980px) {
+    .features__head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 18px;
+    }
+
+    .features__intro {
+      max-width: 560px;
+      padding-bottom: 0;
+    }
+
+    .features__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 620px) {
+    .features__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .feature-card {
+      padding: 22px;
+    }
+  }
+</style>

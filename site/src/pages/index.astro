@@ -1,0 +1,74 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import TrustBar from '../components/TrustBar.astro';
+import FeatureErg from '../components/FeatureErg.astro';
+import FeatureRoute from '../components/FeatureRoute.astro';
+import Zones from '../components/Zones.astro';
+import FeatureGrid from '../components/FeatureGrid.astro';
+import HowItWorks from '../components/HowItWorks.astro';
+import Install from '../components/Install.astro';
+import Faq from '../components/Faq.astro';
+import FinalCta from '../components/FinalCta.astro';
+import Footer from '../components/Footer.astro';
+import { faqs } from '../data/faqs';
+
+const pageUrl = 'https://jpenren.github.io/erglite/';
+
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'ErgLite',
+  applicationCategory: 'SportsApplication',
+  operatingSystem: 'Windows, macOS, Linux',
+  description:
+    'Desktop app for indoor training with structured power-based workouts and gradient routes. No accounts, no cloud and no subscriptions.',
+  url: pageUrl,
+  downloadUrl: 'https://github.com/jpenren/erglite/releases/latest',
+  softwareVersion: '0.5.0',
+  inLanguage: 'en',
+  isAccessibleForFree: true,
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'EUR',
+  },
+  license: 'https://opensource.org/license/mit',
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer,
+    },
+  })),
+};
+---
+
+<Layout>
+  <Header />
+
+  <main id="content">
+    <Hero />
+    <TrustBar />
+    <FeatureErg />
+    <FeatureRoute />
+    <Zones />
+    <FeatureGrid />
+    <HowItWorks />
+    <Install />
+    <Faq />
+    <FinalCta />
+  </main>
+
+  <Footer />
+
+  <script type="application/ld+json" set:html={JSON.stringify(softwareSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+</Layout>
