@@ -101,7 +101,13 @@ jobs:
       - name: Debug bundle output
         run: |
           echo "Listing bundle directories for ${{ matrix.target }}"
-          ls -la target/${{ matrix.target }}/release/bundle/ 2>/dev/null || echo "Bundle directory not found"
+          if [ "${{ matrix.target }}" = "" ]; then
+            # Linux: use hardcoded path without target variable
+            ls -la app/src-tauri/target/release/bundle/ 2>/dev/null || echo "Bundle directory not found"
+          else
+            # macOS/Windows: use target variable
+            ls -la target/${{ matrix.target }}/release/bundle/ 2>/dev/null || echo "Bundle directory not found"
+          fi
           find target/${{ matrix.target }}/release/bundle/ -type f -name "*.dmg" -o -name "*.app.tar.gz" 2>/dev/null | head -10 || echo "No files found"
 
       - name: Upload installer artifacts
