@@ -160,35 +160,41 @@ jobs:
               mkdir -p universal
               cp -R "$X86_APP" universal/
               UNIVERSAL_APP="universal/$(basename "$X86_APP")"
-              
-              # Find the actual binary path inside the app bundles
-              # Tauri apps typically have the binary at Contents/MacOS/<appname>
+               
+              # Debug: List what's in the app bundles
+              echo "DEBUG: Listing x86_64 Contents/MacOS:"
+              find "$X86_APP/Contents/MacOS" -type f 2>/dev/null | head -10 || echo "No files found"
+              echo "DEBUG: Listing aarch64 Contents/MacOS:"
+              find "$ARM_APP/Contents/MacOS" -type f 2>/dev/null | head -10 || echo "No files found"
+               
+              # Try to find the binary - ErgLite is the typical Tauri app binary name
               X86_BIN=$(find "$X86_APP/Contents/MacOS" -type f -name "ErgLite" 2>/dev/null | head -1)
               ARM_BIN=$(find "$ARM_APP/Contents/MacOS" -type f -name "ErgLite" 2>/dev/null | head -1)
-              
-              echo "X86 binary found: $X86_BIN"
-              echo "ARM binary found: $ARM_BIN"
-              
+               
+              # If not found, try alternative names
+              if [ -z "$X86_BIN" ]; then
+                X86_BIN=$(find "$X86_APP/Contents/MacOS" -type f -name "ergolite" -o -name "binary" -o -name "app" 2>/dev/null | head -1)
+              fi
+              if [ -z "$ARM_BIN" ]; then
+                ARM_BIN=$(find "$ARM_APP/Contents/MacOS" -type f -name "ergolite" -o -name "binary" -o -name "app" 2>/dev/null | head -1)
+              fi
+               
+              echo "DEBUG: X86_BIN=$X86_BIN"
+              echo "DEBUG: ARM_BIN=$ARM_BIN"
+               
               if [ -n "$X86_BIN" ] && [ -n "$ARM_BIN" ]; then
+                # Create universal binary with lipo
                 lipo -create -output "$UNIVERSAL_APP/Contents/MacOS/ErgLite" "$X86_BIN" "$ARM_BIN"
                 echo "Binary merging successful"
               else
-                echo "Binary not found at standard path, trying alternative locations..."
-                # Try finding binary at other common locations
-                X86_BIN=$(find "$X86_APP" -maxdepth 3 -type f -executable 2>/dev/null | head -1)
-                ARM_BIN=$(find "$ARM_APP" -maxdepth 3 -type f -executable 2>/dev/null | head -1)
-                
-                if [ -n "$X86_BIN" ] && [ -n "$ARM_BIN" ]; then
-                  lipo -create -output "$UNIVERSAL_APP/Contents/MacOS/ErgLite" "$X86_BIN" "$ARM_BIN"
-                  echo "Binary merging successful (alternative path)"
-                else
-                  echo "Could not find executable binary, copying apps as-is"
-                  # Fallback: copy apps without binary merging
-                  cp -R "$X86_APP" universal/ErgLite_x64.app 2>/dev/null || true
-                  cp -R "$ARM_APP" universal/ErgLite_arm64.app 2>/dev/null || true
-                fi
+                echo "Could not find ErgLite binary in app bundles"
+                # Fallback: just copy the entire apps without binary merging
+                # This will create a universal DMG but each arch will have its own binary
+                cp -R "$X86_APP" universal/ErgLite_x64.app 2>/dev/null || true
+                cp -R "$ARM_APP" universal/ErgLite_arm64.app 2>/dev/null || true
+                echo "Copied apps as-is (no binary merge)"
               fi
-              
+               
               # Create universal DMG
               hdiutil create -volname "ErgLite" -srcfolder universal -ov -format UDZO "ErgLite_universal.dmg"
               echo "Universal DMG created"
