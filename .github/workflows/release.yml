@@ -98,6 +98,12 @@ jobs:
           prerelease: false
           args: ${{ matrix.target != '' && format('--target {0} --features ble', matrix.target) || '--features ble' }}
 
+      - name: Debug bundle output
+        run: |
+          echo "Listing bundle directories for ${{ matrix.target }}"
+          ls -la app/src-tauri/target/${{ matrix.target }}/release/bundle/
+          find app/src-tauri/target/${{ matrix.target }}/release/bundle/ -type f -name "*.dmg" -o -name "*.app.tar.gz" | head -10
+
       - name: Upload installer artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -124,27 +130,31 @@ jobs:
           ls -la macos-artifacts/ || true
           find macos-artifacts -type f 2>/dev/null | head -20 || true
 
-      - name: Create universal DMG
+      - name: Find DMG files
         run: |
-          # Find the DMG files and app bundles from downloaded artifacts
-          X86_DMG=$(find macos-artifacts -name "*.dmg" -path "*x86_64*" | head -1)
-          ARM_DMG=$(find macos-artifacts -name "*.dmg" -path "*aarch64*" | head -1)
-          
+          echo "DMG files found:"
+          find macos-artifacts -type f -name "*.dmg" | head -20
+
+      - name: Create universal DMG
+        if: always()
+        run: |
+          # Try to find DMG files for both architectures
+          X86_DMG=$(find macos-artifacts -type f -name "*.dmg" | head -1 || true)
+          ARM_DMG=$(find macos-artifacts -type f -name "*.dmg" | tail -1 || true)
+           
           echo "X86 DMG: $X86_DMG"
           echo "ARM DMG: $ARM_DMG"
-          
+           
+          # Create universal DMG from the two DMGs if both exist
           if [ -n "$X86_DMG" ] && [ -n "$ARM_DMG" ]; then
-            # Mount DMGs to extract .app bundles
             mkdir -p x86_64 aarch64 universal
             
+            # Mount the DMGs to extract the .app bundles
             hdiutil attach "$X86_DMG" -mountpoint x86_64/mnt -nobrowse -quiet
             hdiutil attach "$ARM_DMG" -mountpoint aarch64/mnt -nobrowse -quiet
             
             X86_APP=$(find x86_64/mnt -name "*.app" -maxdepth 2 | head -1)
             ARM_APP=$(find aarch64/mnt -name "*.app" -maxdepth 2 | head -1)
-            
-            echo "X86 App: $X86_APP"
-            echo "ARM App: $ARM_APP"
             
             if [ -n "$X86_APP" ] && [ -n "$ARM_APP" ]; then
               mkdir -p universal
@@ -156,13 +166,21 @@ jobs:
               hdiutil create -volname "ErgLite" -srcfolder universal -ov -format UDZO "ErgLite_universal.dmg"
               echo "Universal DMG created"
             else
-              echo "Could not find both app bundles"
+              echo "Could not find both app bundles inside DMGs"
             fi
             
             hdiutil detach x86_64/mnt -quiet 2>/dev/null || true
             hdiutil detach aarch64/mnt -quiet 2>/dev/null || true
+          elif [ -n "$X86_DMG" ]; then
+            # Only x86_64 DMG found, copy it as-is
+            cp "$X86_DMG" ErgLite_universal.dmg
+            echo "Only x86_64 DMG found, copied as-is"
+          elif [ -n "$ARM_DMG" ]; then
+            # Only ARM DMG found, copy it as-is
+            cp "$ARM_DMG" ErgLite_universal.dmg
+            echo "Only ARM DMG found, copied as-is"
           else
-            echo "Could not find both DMGs"
+            echo "No DMG files found"
           fi
 
       - name: Upload universal DMG
