@@ -101,8 +101,8 @@ jobs:
       - name: Debug bundle output
         run: |
           echo "Listing bundle directories for ${{ matrix.target }}"
-          ls -la app/src-tauri/target/${{ matrix.target }}/release/bundle/
-          find app/src-tauri/target/${{ matrix.target }}/release/bundle/ -type f -name "*.dmg" -o -name "*.app.tar.gz" | head -10
+          ls -la target/${{ matrix.target }}/release/bundle/ 2>/dev/null || echo "Bundle directory not found"
+          find target/${{ matrix.target }}/release/bundle/ -type f -name "*.dmg" -o -name "*.app.tar.gz" 2>/dev/null | head -10 || echo "No files found"
 
       - name: Upload installer artifacts
         uses: actions/upload-artifact@v4
