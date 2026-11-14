@@ -126,7 +126,7 @@ jobs:
         shell: bash
     steps:
       - name: Download macOS artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: 'macOS*-installers'
           path: macos-artifacts
@@ -238,7 +238,7 @@ jobs:
       contents: write
     steps:
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: '*-installers'
           path: artifacts
