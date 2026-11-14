@@ -1014,7 +1014,7 @@ dependencies = [
 
 [[package]]
 name = "erglite-cli"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "clap",
  "erglite-core",
@@ -1027,7 +1027,7 @@ dependencies = [
 
 [[package]]
 name = "erglite-core"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -1036,7 +1036,7 @@ dependencies = [
 
 [[package]]
 name = "erglite-formats"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "erglite-core",
  "quick-xml",
@@ -1045,7 +1045,7 @@ dependencies = [
 
 [[package]]
 name = "erglite-ftms"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "proptest",
  "thiserror 2.0.21",
@@ -1053,7 +1053,7 @@ dependencies = [
 
 [[package]]
 name = "erglite-runtime"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "erglite-core",
  "erglite-store",
@@ -1065,7 +1065,7 @@ dependencies = [
 
 [[package]]
 name = "erglite-store"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "erglite-core",
  "rusqlite",
@@ -1077,7 +1077,7 @@ dependencies = [
 
 [[package]]
 name = "erglite-transport"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "async-trait",
  "btleplug",
@@ -1093,7 +1093,7 @@ dependencies = [
 
 [[package]]
 name = "erglite-workspace"
-version = "0.4.0"
+version = "0.5.0"
 
 [[package]]
 name = "errno"
@@ -4316,9 +4316,9 @@ checksum = "3a3b425286980a367278453f3b6d28cdcb134b574e5a35824a6ff5eebad50bb6"
 
 [[package]]
 name = "uuid"
-version = "1.29.0"
+version = "1.29.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4a0e2d11620c50695fe12bbbfde96b3477fe606e7284c22d505c12ce51214514"
+checksum = "bed99139f7dac9b5cfe5f17be4d66dc7079a34dee1d74bcc77217119240e267c"
 dependencies = [
  "getrandom 0.4.3",
  "js-sys",
