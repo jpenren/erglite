@@ -248,7 +248,7 @@ jobs:
         run: find artifacts -type f \( -name "*.deb" -o -name "*.rpm" -o -name "*.AppImage" -o -name "*.msi" -o -name "*.exe" -o -name "*.dmg" -o -name "*.app.tar.gz" \) | sort
 
       - name: Create release with installers
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ github.ref_name }}
           name: "ErgLite ${{ github.ref_name }}"
