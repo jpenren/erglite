@@ -111,7 +111,7 @@ jobs:
           find target/${{ matrix.target }}/release/bundle/ -type f -name "*.dmg" -o -name "*.app.tar.gz" 2>/dev/null | head -10 || echo "No files found"
 
       - name: Upload installer artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.name }}-installers
           path: ${{ matrix.artifacts }}
@@ -224,7 +224,7 @@ jobs:
 
       - name: Upload universal DMG
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: macOS-universal-installers
           path: ErgLite_universal.dmg
