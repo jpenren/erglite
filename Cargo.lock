@@ -1014,7 +1014,7 @@ dependencies = [
 
 [[package]]
 name = "erglite-cli"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "clap",
  "erglite-core",
@@ -1027,7 +1027,7 @@ dependencies = [
 
 [[package]]
 name = "erglite-core"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -1036,7 +1036,7 @@ dependencies = [
 
 [[package]]
 name = "erglite-formats"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "erglite-core",
  "quick-xml",
@@ -1045,7 +1045,7 @@ dependencies = [
 
 [[package]]
 name = "erglite-ftms"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "proptest",
  "thiserror 2.0.21",
@@ -1053,7 +1053,7 @@ dependencies = [
 
 [[package]]
 name = "erglite-runtime"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "erglite-core",
  "erglite-store",
@@ -1065,7 +1065,7 @@ dependencies = [
 
 [[package]]
 name = "erglite-store"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "erglite-core",
  "rusqlite",
@@ -1077,7 +1077,7 @@ dependencies = [
 
 [[package]]
 name = "erglite-transport"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "async-trait",
  "btleplug",
@@ -1093,7 +1093,7 @@ dependencies = [
 
 [[package]]
 name = "erglite-workspace"
-version = "0.4.0"
+version = "0.5.0"
 
 [[package]]
 name = "errno"
@@ -3718,9 +3718,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-build"
-version = "2.7.4"
+version = "2.7.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "adddb0e648752aaac5da9c3c3c6a68e1e87cab55e3b757b18a9441ef8c3ac614"
+checksum = "3e03658bfc9cb60f96a05b7d07a7f7cdfbf4c30b1bbfcb5cf6b5342cc2c9e0bc"
 dependencies = [
  "anyhow",
  "cargo_toml",
@@ -3832,9 +3832,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-utils"
-version = "2.10.2"
+version = "2.10.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "362ab21cd4cc713f2a02b1a9b5688198b1541cfb6907c4281e9190e0f0ef4aa3"
+checksum = "28d1d33d4453c5df0bf1672dbc7ada69d8ed74f56a4316d964a4aa73d4ecd3ad"
 dependencies = [
  "anyhow",
  "brotli",
