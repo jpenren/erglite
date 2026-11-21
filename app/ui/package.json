@@ -15,7 +15,7 @@
   "dependencies": {
     "@fontsource/barlow": "^5.2.0",
     "@fontsource/barlow-condensed": "^5.2.0",
-    "@tauri-apps/api": "^2.0.0"
+    "@tauri-apps/api": "^2.12.5"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^7.3.1",
